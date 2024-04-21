@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 
 class SettingsTableSeeder extends Seeder
 {
-
     /**
      * Auto generated seed file
      *
@@ -15,19 +14,17 @@ class SettingsTableSeeder extends Seeder
     public function run()
     {
 
-
         \DB::table('settings')->delete();
 
-        \DB::table('settings')->insert(array(
-            0 =>
-            array(
+        \DB::table('settings')->insert([
+            0 => [
                 'id' => 1,
                 'site_title' => 'My Library',
                 'logo' => 'site_assets/logo.png',
                 'favicon' => 'site_assets/favicon.png',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ),
-        ));
+            ],
+        ]);
     }
 }

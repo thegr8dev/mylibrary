@@ -10,17 +10,16 @@ use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Support\Colors\Color;
-use Filament\Tables\Actions\ActionGroup;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SubscriptionRelationManager extends RelationManager
 {
@@ -49,7 +48,7 @@ class SubscriptionRelationManager extends RelationManager
                     ->copyMessage('Copied Subscription ID')
                     ->searchable(),
                 TextColumn::make('seat.seat_no')
-                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre') . "{$state}")
+                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre')."{$state}")
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('start_date')
@@ -113,7 +112,7 @@ class SubscriptionRelationManager extends RelationManager
                     ->multiple()
                     ->label('By Seat No.')
                     ->relationship('seat', 'seat_no')
-                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre') . "{$seat->seat_no}")
+                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre')."{$seat->seat_no}")
                     ->preload(),
                 SelectFilter::make('payment_method')
                     ->label('By Payment Method')
@@ -167,8 +166,7 @@ class SubscriptionRelationManager extends RelationManager
                         ->color('success')
                         ->url(fn (Subscription $record): string => route(EditSubscription::getRouteName(), $record)),
                     Tables\Actions\DeleteAction::make(),
-                ])
-
+                ]),
 
             ])
             ->bulkActions([

@@ -36,7 +36,7 @@ class EditSubscription extends EditRecord
     {
         $data = $this->data;
 
-        if (!in_array($this->data['status'], ['active', 'upcoming'])) {
+        if (! in_array($this->data['status'], ['active', 'upcoming'])) {
             return;
         }
 

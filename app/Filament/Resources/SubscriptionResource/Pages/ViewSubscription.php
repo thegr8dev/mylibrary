@@ -7,12 +7,11 @@ use Filament\Actions;
 use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\Group;
 use Filament\Infolists\Components\ImageEntry;
-use Filament\Support\Colors\Color;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
-use Filament\Support\Enums\Alignment;
+use Filament\Support\Colors\Color;
 use Filament\Support\Enums\MaxWidth;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
@@ -29,9 +28,9 @@ class ViewSubscription extends ViewRecord
         ];
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
-        return '#' . $this->getRecord()->uuid;
+        return '#'.$this->getRecord()->uuid;
     }
 
     public function infolist(Infolist $infolist): Infolist
@@ -39,7 +38,7 @@ class ViewSubscription extends ViewRecord
         return $infolist
             ->schema([
                 Section::make()->schema([
-                    Fieldset::make("View Subscription")->schema([
+                    Fieldset::make('View Subscription')->schema([
 
                         TextEntry::make('uuid')->label('Subscription ID')->columnSpan(3),
 
@@ -47,9 +46,8 @@ class ViewSubscription extends ViewRecord
 
                             TextEntry::make('subscriber.name'),
                             TextEntry::make('seat.seat_no')
-                                ->formatStateUsing(fn (string $state) => config('seatprefix.pre') . $state),
+                                ->formatStateUsing(fn (string $state) => config('seatprefix.pre').$state),
                         ])->columns(2)->columnSpan(3),
-
 
                         Group::make()->schema([
                             TextEntry::make('start_date')->date('d/m/Y'),
@@ -95,9 +93,8 @@ class ViewSubscription extends ViewRecord
                                 ->default('-'),
 
                             TextEntry::make('note')
-                                ->default('-')
+                                ->default('-'),
                         ])->columns(2)->columnSpan(3),
-
 
                         ImageEntry::make('payment_proof')
                             ->helperText('Click image to view')
@@ -105,9 +102,9 @@ class ViewSubscription extends ViewRecord
                             // ->width(200)
                             ->height(150)
                             ->simpleLightbox()
-                            ->columnSpanFull()
-                    ])->columns(3)
-                ])->maxWidth(MaxWidth::FourExtraLarge)
+                            ->columnSpanFull(),
+                    ])->columns(3),
+                ])->maxWidth(MaxWidth::FourExtraLarge),
             ]);
     }
 

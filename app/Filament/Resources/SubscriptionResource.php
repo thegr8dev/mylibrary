@@ -19,16 +19,13 @@ use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Alignment;
 use Filament\Tables;
-use Filament\Tables\Columns\Summarizers\Count;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Grouping\Group as GroupingGroup;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class SubscriptionResource extends Resource
 {
@@ -45,10 +42,10 @@ class SubscriptionResource extends Resource
 
         return [
             'Subscriber' => $record->subscriber->name,
-            'Seat' => config('seatprefix.pre') . $record->seat->seat_no,
+            'Seat' => config('seatprefix.pre').$record->seat->seat_no,
             'Status' => ucwords($record->status),
             'Start Date' => date('d/m/Y', strtotime($record->start_date)),
-            'End Date' => date('d/m/Y', strtotime($record->end_date))
+            'End Date' => date('d/m/Y', strtotime($record->end_date)),
         ];
     }
 
@@ -136,7 +133,7 @@ class SubscriptionResource extends Resource
                                 Textarea::make('note')->hint('Optional : If you want to put any extra note'),
                             ]),
                         ])
-                        ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre') . "{$seat->seat_no}")
+                        ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre')."{$seat->seat_no}")
                         ->validationMessages([
                             'required' => 'Please select seat',
                         ])
@@ -228,7 +225,7 @@ class SubscriptionResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('seat.seat_no')
-                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre') . "{$state}")
+                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre')."{$state}")
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('start_date')
@@ -289,7 +286,7 @@ class SubscriptionResource extends Resource
                     ->multiple()
                     ->label('By Seat No.')
                     ->relationship('seat', 'seat_no')
-                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre') . "{$seat->seat_no}")
+                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre')."{$seat->seat_no}")
                     ->preload(),
                 SelectFilter::make('payment_method')
                     ->label('By Payment Method')
@@ -356,7 +353,7 @@ class SubscriptionResource extends Resource
         return [
             'index' => Pages\ListSubscriptions::route('/'),
             'create' => Pages\CreateSubscription::route('/create'),
-            'view'  => Pages\ViewSubscription::route('/{record}/'),
+            'view' => Pages\ViewSubscription::route('/{record}/'),
             'edit' => Pages\EditSubscription::route('/{record}/edit'),
         ];
     }

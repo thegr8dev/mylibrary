@@ -2,12 +2,10 @@
 
 namespace App\Filament\Resources;
 
-
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers\SubscriptionRelationManager;
 use App\Models\User;
 use Filament\Forms\Form;
-use Filament\GlobalSearch\Actions\Action;
 use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\Group;
 use Filament\Infolists\Components\ImageEntry;
@@ -44,7 +42,7 @@ class UserResource extends Resource
         return [
             'Name' => $record->name,
             'Email' => $record->email,
-            'Phone' => $record->phone_no
+            'Phone' => $record->phone_no,
         ];
     }
 
@@ -107,7 +105,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            SubscriptionRelationManager::class
+            SubscriptionRelationManager::class,
         ];
     }
 

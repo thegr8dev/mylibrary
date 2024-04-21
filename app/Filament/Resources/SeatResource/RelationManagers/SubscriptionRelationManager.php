@@ -162,7 +162,7 @@ class SubscriptionRelationManager extends RelationManager
                         ->color('success')
                         ->url(fn (Subscription $record): string => route(EditSubscription::getRouteName(), $record)),
                     Tables\Actions\DeleteAction::make(),
-                ])
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

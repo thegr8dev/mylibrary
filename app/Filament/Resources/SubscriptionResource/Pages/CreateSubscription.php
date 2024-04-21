@@ -29,7 +29,7 @@ class CreateSubscription extends CreateRecord
     {
         $data = $this->data;
 
-        if (!in_array($this->data['status'], ['active', 'upcoming'])) {
+        if (! in_array($this->data['status'], ['active', 'upcoming'])) {
             return;
         }
 
@@ -91,8 +91,8 @@ class CreateSubscription extends CreateRecord
                         ->markAsRead()
                         ->url(route(ViewSubscription::getRouteName(), $this->getRecord())),
                 ])
-                ->title('A New Subscription added for ' . $data->subscriber->name)
-                ->body('This subscription added for Seat No.' . $data->seat->seat_no)
+                ->title('A New Subscription added for '.$data->subscriber->name)
+                ->body('This subscription added for Seat No.'.$data->seat->seat_no)
                 ->toDatabase(),
         );
     }
