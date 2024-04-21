@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UserResource\RelationManagers;
 
 use App\Filament\Resources\SubscriptionResource\Pages\EditSubscription;
+use App\Filament\Resources\SubscriptionResource\Pages\ViewSubscription;
 use App\Models\Seat;
 use App\Models\Subscription;
 use Filament\Forms;
@@ -18,6 +19,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Support\Colors\Color;
+use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SubscriptionRelationManager extends RelationManager
@@ -154,11 +156,20 @@ class SubscriptionRelationManager extends RelationManager
                 // Tables\Actions\AssociateAction::make(),
             ])
             ->actions([
-                Action::make('edit')
-                    ->icon('heroicon-o-pencil-square')
-                    ->color('success')
-                    ->url(fn (Subscription $record): string => route(EditSubscription::getRouteName(), $record)),
-                Tables\Actions\DeleteAction::make(),
+
+                ActionGroup::make([
+                    Action::make('view')
+                        ->icon('heroicon-o-eye')
+                        ->color('warning')
+                        ->url(fn (Subscription $record): string => route(ViewSubscription::getRouteName(), $record)),
+                    Action::make('edit')
+                        ->icon('heroicon-o-pencil-square')
+                        ->color('success')
+                        ->url(fn (Subscription $record): string => route(EditSubscription::getRouteName(), $record)),
+                    Tables\Actions\DeleteAction::make(),
+                ])
+
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

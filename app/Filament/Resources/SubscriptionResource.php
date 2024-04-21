@@ -24,6 +24,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Grouping\Group as GroupingGroup;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -202,7 +203,9 @@ class SubscriptionResource extends Resource
                         FileUpload::make('payment_proof')
                             ->label('Payment Proof')
                             ->image()
+                            ->openable()
                             ->disk('public')
+                            ->removeUploadedFileButtonPosition('right')
                             ->directory('payments')
                             ->uploadingMessage('Uploading Proof...')
                             ->downloadable()
@@ -328,6 +331,7 @@ class SubscriptionResource extends Resource
             ], layout: FiltersLayout::AboveContent)
             ->filtersFormColumns(3)
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -352,6 +356,7 @@ class SubscriptionResource extends Resource
         return [
             'index' => Pages\ListSubscriptions::route('/'),
             'create' => Pages\CreateSubscription::route('/create'),
+            'view'  => Pages\ViewSubscription::route('/{record}/'),
             'edit' => Pages\EditSubscription::route('/{record}/edit'),
         ];
     }

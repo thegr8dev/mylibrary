@@ -17,7 +17,8 @@ class EditSubscription extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\ViewAction::make()->icon('heroicon-o-eye')->color('info'),
+            Actions\DeleteAction::make()->icon('heroicon-o-trash'),
         ];
     }
 
@@ -35,7 +36,7 @@ class EditSubscription extends EditRecord
     {
         $data = $this->data;
 
-        if (! in_array($this->data['status'], ['active', 'upcoming'])) {
+        if (!in_array($this->data['status'], ['active', 'upcoming'])) {
             return;
         }
 

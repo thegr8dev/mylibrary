@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
+use Filament\Notifications\Notification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
@@ -28,8 +30,16 @@ class Setup extends Command
     {
         $this->info('Starting setup....');
         $this->info('Copying assets ...');
+        Artisan::call('copy:assets');
         $this->info('Seeding ...');
         Artisan::call('db:seed');
         $this->info('Done !');
+
+        Notification::make()
+            ->success()
+            ->icon('heroicon-o-cursor-arrow-ripple')
+            ->title('Setup completed !')
+            ->body('Congrats ! app installed sucessfully !')
+            ->sendToDatabase(User::find(1));
     }
 }

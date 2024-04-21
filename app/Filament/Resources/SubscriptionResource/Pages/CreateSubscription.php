@@ -89,7 +89,7 @@ class CreateSubscription extends CreateRecord
                     Action::make('view')
                         ->size(ActionSize::ExtraSmall)
                         ->markAsRead()
-                        ->url(route(EditSubscription::getRouteName(), $this->getRecord())),
+                        ->url(route(ViewSubscription::getRouteName(), $this->getRecord())),
                 ])
                 ->title('A New Subscription added for ' . $data->subscriber->name)
                 ->body('This subscription added for Seat No.' . $data->seat->seat_no)

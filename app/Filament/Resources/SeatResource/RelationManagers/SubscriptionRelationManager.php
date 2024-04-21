@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SeatResource\RelationManagers;
 
 use App\Filament\Resources\SubscriptionResource\Pages\EditSubscription;
+use App\Filament\Resources\SubscriptionResource\Pages\ViewSubscription;
 use App\Models\Subscription;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -11,6 +12,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
@@ -150,11 +152,17 @@ class SubscriptionRelationManager extends RelationManager
                 // Tables\Actions\AssociateAction::make(),
             ])
             ->actions([
-                Action::make('edit')
-                    ->icon('heroicon-o-pencil-square')
-                    ->color('success')
-                    ->url(fn (Subscription $record): string => route(EditSubscription::getRouteName(), $record)),
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                    Action::make('view')
+                        ->icon('heroicon-o-eye')
+                        ->color('warning')
+                        ->url(fn (Subscription $record): string => route(ViewSubscription::getRouteName(), $record)),
+                    Action::make('edit')
+                        ->icon('heroicon-o-pencil-square')
+                        ->color('success')
+                        ->url(fn (Subscription $record): string => route(EditSubscription::getRouteName(), $record)),
+                    Tables\Actions\DeleteAction::make(),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
