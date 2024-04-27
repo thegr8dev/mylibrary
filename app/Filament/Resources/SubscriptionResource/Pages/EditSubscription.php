@@ -36,12 +36,14 @@ class EditSubscription extends EditRecord
     {
         $data = $this->data;
 
-        if (! in_array($this->data['status'], ['active', 'upcoming'])) {
+        if (!in_array($this->data['status'], ['active', 'upcoming'])) {
             return;
         }
 
         /** Check if user has already have active subscription */
-        $ifUserHasActiveSub = Subscription::where('user_id', $data['user_id'])->where('status', 'active')->where('id', '!=', $data['id'])->first();
+        $ifUserHasActiveSub = Subscription::where('user_id', $data['user_id'])
+            ->where('status', 'active')->where('id', '!=', $data['id'])
+            ->first();
 
         if ($ifUserHasActiveSub) {
             Notification::make()

@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->favicon(url('storage/'.Settings::first()?->favicon))
+            ->favicon(url('storage/' . Settings::first()?->favicon))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -66,6 +66,8 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->passwordReset()
             ->profile()
+            ->brandLogo(asset('storage/' . Settings::first()?->logo))
+            ->brandLogoHeight('3rem')
             ->userMenuItems([
                 'profile' => MenuItem::make()->url(fn (): string => PagesEditProfile::getUrl())->icon('heroicon-o-user'),
             ])

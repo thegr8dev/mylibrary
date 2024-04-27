@@ -15,6 +15,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Alignment;
@@ -42,7 +43,7 @@ class SubscriptionResource extends Resource
 
         return [
             'Subscriber' => $record->subscriber->name,
-            'Seat' => config('seatprefix.pre').$record->seat->seat_no,
+            'Seat' => config('seatprefix.pre') . $record->seat->seat_no,
             'Status' => ucwords($record->status),
             'Start Date' => date('d/m/Y', strtotime($record->start_date)),
             'End Date' => date('d/m/Y', strtotime($record->end_date)),
@@ -133,7 +134,7 @@ class SubscriptionResource extends Resource
                                 Textarea::make('note')->hint('Optional : If you want to put any extra note'),
                             ]),
                         ])
-                        ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre')."{$seat->seat_no}")
+                        ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre') . "{$seat->seat_no}")
                         ->validationMessages([
                             'required' => 'Please select seat',
                         ])
@@ -204,7 +205,7 @@ class SubscriptionResource extends Resource
                             ->disk('public')
                             ->removeUploadedFileButtonPosition('right')
                             ->directory('payments')
-                            ->uploadingMessage('Uploading Proof...')
+                            ->uploadingMessage('Uploading Payment Proof...')
                             ->downloadable()
                             ->maxSize(5000),
                         Textarea::make('note')->placeholder('Any additional note')->rows(3),
@@ -225,7 +226,9 @@ class SubscriptionResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('seat.seat_no')
-                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre')."{$state}")
+                    ->badge()
+                    ->color(Color::Fuchsia)
+                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre') . "{$state}")
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('start_date')
@@ -286,7 +289,7 @@ class SubscriptionResource extends Resource
                     ->multiple()
                     ->label('By Seat No.')
                     ->relationship('seat', 'seat_no')
-                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre')."{$seat->seat_no}")
+                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre') . "{$seat->seat_no}")
                     ->preload(),
                 SelectFilter::make('payment_method')
                     ->label('By Payment Method')
@@ -304,7 +307,6 @@ class SubscriptionResource extends Resource
                             ->closeOnDateSelection(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        // dd($data);
                         return $query
                             ->when(
                                 $data['start_date'],
@@ -346,6 +348,14 @@ class SubscriptionResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewSubscription::class,
+            Pages\EditSubscription::class,
+        ]);
     }
 
     public static function getPages(): array
