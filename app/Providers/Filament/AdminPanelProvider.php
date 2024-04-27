@@ -8,6 +8,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -34,7 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->favicon(url('storage/' . Settings::first()?->favicon))
+            ->favicon(url('storage/'.Settings::first()?->favicon))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -57,6 +58,21 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label('Seating Management')
+                    ->icon('heroicon-o-square-3-stack-3d'),
+                NavigationGroup::make()
+                    ->label('Subscription')
+                    ->icon('heroicon-o-ticket'),
+                NavigationGroup::make()
+                    ->label('User and Permissions')
+                    ->icon('heroicon-o-user-group'),
+                NavigationGroup::make()
+                    ->label('Settings')
+                    ->icon('heroicon-o-wrench-screwdriver'),
+            ])
+            ->navigationItems([])
             ->authMiddleware([
                 Authenticate::class,
             ])
@@ -66,7 +82,7 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->passwordReset()
             ->profile()
-            ->brandLogo(asset('storage/' . Settings::first()?->logo))
+            ->brandLogo(asset('storage/'.Settings::first()?->logo))
             ->brandLogoHeight('3rem')
             ->userMenuItems([
                 'profile' => MenuItem::make()->url(fn (): string => PagesEditProfile::getUrl())->icon('heroicon-o-user'),

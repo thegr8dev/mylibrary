@@ -30,6 +30,8 @@ class UserResource extends Resource
 
     protected static int $globalSearchResultsLimit = 10;
 
+    protected static ?string $navigationGroup = 'User and Permissions';
+
     public static function form(Form $form): Form
     {
         return $form

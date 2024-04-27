@@ -20,6 +20,8 @@ class SeatResource extends Resource
 {
     protected static ?string $model = Seat::class;
 
+    protected static ?string $navigationGroup = 'Seating Management';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -70,7 +72,6 @@ class SeatResource extends Resource
             'index' => Pages\ListSeats::route('/'),
             'create' => Pages\CreateSeat::route('/create'),
             'edit' => Pages\EditSeat::route('/{record}/edit'),
-            'finder' => Pages\SeatAvailabilityFinder::route('/finder')
         ];
     }
 }

@@ -34,6 +34,10 @@ class SubscriptionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Subscription';
+
+    protected static ?string $navigationLabel = 'Manage Subscriptions';
+
     protected static ?string $recordTitleAttribute = 'uuid';
 
     protected static int $globalSearchResultsLimit = 10;
@@ -43,7 +47,7 @@ class SubscriptionResource extends Resource
 
         return [
             'Subscriber' => $record->subscriber->name,
-            'Seat' => config('seatprefix.pre') . $record->seat->seat_no,
+            'Seat' => config('seatprefix.pre').$record->seat->seat_no,
             'Status' => ucwords($record->status),
             'Start Date' => date('d/m/Y', strtotime($record->start_date)),
             'End Date' => date('d/m/Y', strtotime($record->end_date)),
@@ -134,7 +138,7 @@ class SubscriptionResource extends Resource
                                 Textarea::make('note')->hint('Optional : If you want to put any extra note'),
                             ]),
                         ])
-                        ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre') . "{$seat->seat_no}")
+                        ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre')."{$seat->seat_no}")
                         ->validationMessages([
                             'required' => 'Please select seat',
                         ])
@@ -228,7 +232,7 @@ class SubscriptionResource extends Resource
                 TextColumn::make('seat.seat_no')
                     ->badge()
                     ->color(Color::Fuchsia)
-                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre') . "{$state}")
+                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre')."{$state}")
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('start_date')
@@ -261,12 +265,12 @@ class SubscriptionResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn (string $state) => ucwords($state))
                     ->color(fn (string $state) => match ($state) {
-                        'cash' => 'success',
-                        'online' => Color::Amber,
+                        'cash' => Color::Indigo,
+                        'online' => Color::Pink,
                     })
                     ->icons([
                         'heroicon-o-banknotes' => 'cash',
-                        'heroicon-o-device-phone-mobile' => 'online',
+                        'heroicon-o-credit-card' => 'online',
                     ])
                     ->sortable(),
                 TextColumn::make('txn_id')
@@ -289,7 +293,7 @@ class SubscriptionResource extends Resource
                     ->multiple()
                     ->label('By Seat No.')
                     ->relationship('seat', 'seat_no')
-                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre') . "{$seat->seat_no}")
+                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre')."{$seat->seat_no}")
                     ->preload(),
                 SelectFilter::make('payment_method')
                     ->label('By Payment Method')

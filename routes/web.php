@@ -1,8 +1,6 @@
 <?php
 
 use App\Models\Seat;
-use App\Models\Subscription;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,12 +23,14 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::get('/test', function () {
+
     $data = [
-        'start_date' => '2024-04-05',
-        'end_date' => '2024-04-20'
+        'start_date' => '2024-05-08',
+        'end_date' => '',
     ];
 
-    return Subscription::where('end_date', '>=', $data['start_date'])
-        ->where('start_date', '<=', $data['end_date'])
-        ->get();
+    return $x = Seat::whereDoesntHave('subscription', function ($q) use ($data) {
+        return $q->where('status', 'active')->where('end_date', '>=', $data['start_date']);
+        // ->where('start_date', '<=', $data['end_date']);
+    })->get();
 });

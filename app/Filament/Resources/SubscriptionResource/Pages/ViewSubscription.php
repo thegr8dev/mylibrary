@@ -77,12 +77,12 @@ class ViewSubscription extends ViewRecord
                                 ->badge()
                                 ->formatStateUsing(fn (string $state) => ucwords($state))
                                 ->color(fn (string $state) => match ($state) {
-                                    'cash' => 'success',
-                                    'online' => Color::Amber,
+                                    'cash' => Color::Indigo,
+                                    'online' => Color::Pink,
                                 })
                                 ->icons([
                                     'heroicon-o-banknotes' => 'cash',
-                                    'heroicon-o-device-phone-mobile' => 'online',
+                                    'heroicon-o-qr-code' => 'online',
                                 ]),
 
                         ])->columns(2)->columnSpan(3),

@@ -22,6 +22,12 @@ class Settings extends Page implements HasForms
 
     protected static string $view = 'filament.pages.settings';
 
+    protected static ?string $navigationGroup = 'Settings';
+
+    protected static ?string $navigationGroupIcon = 'heroicon-o-cog-6-tooth';
+
+    protected static ?string $navigationLabel = 'Site Settings';
+
     public ?array $data = [];
 
     public $settings;

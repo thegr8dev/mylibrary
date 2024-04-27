@@ -22,24 +22,39 @@ class Subscription extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function scopeActive($query, $startDate, $endDate)
+    public function scopeActive($query, $startDate, $endDate = null)
     {
+
         return $query->where('status', 'active')
             ->where(function ($query) use ($startDate, $endDate) {
-                $query->where(function ($query) use ($startDate, $endDate) {
-                    $query->where('start_date', '>=', $startDate)
-                        ->where('start_date', '<=', $endDate);
-                })->orWhere(function ($query) use ($startDate, $endDate) {
-                    $query->where('end_date', '>=', $startDate)
-                        ->where('end_date', '<=', $endDate);
-                })->orWhere(function ($query) use ($startDate, $endDate) {
-                    $query->where('start_date', '<', $startDate)
-                        ->where('end_date', '>', $endDate);
-                })
-                    ->orWhere(function ($query) use ($startDate, $endDate) {
+                $query->when($endDate, function ($query) use ($startDate, $endDate) {
+
+                    return $query->where(function ($query) use ($startDate, $endDate) {
                         $query->where('start_date', '>=', $startDate)
-                            ->where('end_date', '<=', $endDate);
+                            ->when($endDate, function ($q, $date) {
+                                $q->where('start_date', '<=', $date);
+                            });
+                    })->orWhere(function ($query) use ($startDate, $endDate) {
+                        $query->where('end_date', '>=', $startDate)
+                            ->when($endDate, function ($q, $date) {
+                                $q->where('end_date', '<=', $date);
+                            });
+                    })->orWhere(function ($query) use ($startDate, $endDate) {
+                        $query->where('start_date', '<', $startDate)
+                            ->when($endDate, function ($q, $date) {
+                                $q->where('end_date', '>', $date);
+                            });
+                    })->orWhere(function ($query) use ($startDate, $endDate) {
+                        $query->where('start_date', '>=', $startDate)
+                            ->when($endDate, function ($q, $date) {
+                                return $q->where('end_date', '<=', $date);
+                            });
                     });
+                })->when(is_null($endDate), function ($query) use ($startDate) {
+                    $query->where(function ($query) use ($startDate) {
+                        $query->where('end_date', '>=', $startDate);
+                    });
+                });
             });
     }
 
