@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\SeatExporter;
+use App\Filament\Imports\SeatImporter;
 use App\Filament\Resources\SeatResource\Pages;
 use App\Filament\Resources\SeatResource\RelationManagers\SubscriptionRelationManager;
 use App\Models\Seat;
@@ -12,6 +14,9 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -39,6 +44,17 @@ class SeatResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(SeatImporter::class)
+                    ->chunkSize(250)
+                    ->options([
+                        'updateExisting' => false,
+                    ]),
+                ExportAction::make()
+                    ->exporter(SeatExporter::class)
+                    ->chunkSize(250)
+            ])
             ->columns([
                 TextColumn::make('seat_no')->sortable()->searchable(),
                 ToggleColumn::make('status')->sortable(),
@@ -55,6 +71,9 @@ class SeatResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                        ->exporter(SeatExporter::class)
+                        ->chunkSize(250)
                 ]),
             ]);
     }

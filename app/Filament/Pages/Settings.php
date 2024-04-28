@@ -12,6 +12,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -20,6 +21,7 @@ use Filament\Pages\Page;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\HtmlString;
 use PHPUnit\TestRunner\TestResult\Collector;
 
 class Settings extends Page implements HasForms
@@ -47,6 +49,8 @@ class Settings extends Page implements HasForms
                 'favicon' => app(SiteSettings::class)->favicon,
                 'primary_color' => app(SiteSettings::class)->primary_color,
                 'font' => app(SiteSettings::class)->font,
+                'spa_mode' => app(SiteSettings::class)->spa_mode,
+                'top_navigation' => app(SiteSettings::class)->top_navigation,
                 'copyright_text' => app(SiteSettings::class)->copyright_text,
             ]
         );
@@ -96,7 +100,7 @@ class Settings extends Page implements HasForms
                 ])->aside()->icon('heroicon-m-code-bracket'),
 
             Section::make('Theming')
-                ->description('Customize your site primary color, fonts.')
+                ->description(new HtmlString('Customize your site primary color, fonts, spa and navigation style. <br><br> (Changes will take effect on page reload)'))
                 ->schema([
                     Select::make('primary_color')
                         ->allowHtml()
@@ -124,6 +128,36 @@ class Settings extends Page implements HasForms
                                     $case->value => "<span style='font-family:{$case->getLabel()}'>{$case->getLabel()}</span>",
                                 ]),
                         ),
+                    ToggleButtons::make('spa_mode')
+                        ->label('SPA Mode')
+                        ->boolean()
+                        ->options([
+                            1 => 'ON',
+                            0 => 'OFF',
+                        ])
+                        ->grouped()
+                        ->icons([
+                            1 => 'heroicon-o-bolt',
+                            0 => 'heroicon-o-power',
+                        ])
+                        ->inline(),
+                    ToggleButtons::make('top_navigation')
+                        ->label('Navigation Style')
+                        ->boolean()
+                        ->options([
+                            0 => 'Sidebar',
+                            1 => 'Topbar',
+                        ])
+                        ->grouped()
+                        ->icons([
+                            0 => 'heroicon-o-arrow-left-circle',
+                            1 => 'heroicon-o-arrow-up-circle',
+                        ])
+                        ->colors([
+                            0 => 'info',
+                            1 => 'info',
+                        ])
+                        ->inline(),
                 ])
                 ->columns(2)
                 ->aside()
