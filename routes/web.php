@@ -1,7 +1,11 @@
 <?php
 
-use App\Models\Seat;
+
+use App\Enums\SiteColors;
+use App\Settings\SiteSettings;
+use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Route;
+use App\Mapper\ColorMapper;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,14 +27,6 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::get('/test', function () {
-
-    $data = [
-        'start_date' => '2024-05-08',
-        'end_date' => '',
-    ];
-
-    return $x = Seat::whereDoesntHave('subscription', function ($q) use ($data) {
-        return $q->where('status', 'active')->where('end_date', '>=', $data['start_date']);
-        // ->where('start_date', '<=', $data['end_date']);
-    })->get();
+    $name = 'Blue';
+    return constant("Filament\Support\Colors\Color::" . $name);
 });

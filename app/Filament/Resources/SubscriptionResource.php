@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\SubscriptionExporter;
 use App\Filament\Resources\SubscriptionResource\Pages;
 use App\Models\Seat;
 use App\Models\Subscription;
 use App\Models\User;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -15,11 +17,14 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Alignment;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
@@ -47,7 +52,7 @@ class SubscriptionResource extends Resource
 
         return [
             'Subscriber' => $record->subscriber->name,
-            'Seat' => config('seatprefix.pre').$record->seat->seat_no,
+            'Seat' => config('seatprefix.pre') . $record->seat->seat_no,
             'Status' => ucwords($record->status),
             'Start Date' => date('d/m/Y', strtotime($record->start_date)),
             'End Date' => date('d/m/Y', strtotime($record->end_date)),
@@ -138,7 +143,7 @@ class SubscriptionResource extends Resource
                                 Textarea::make('note')->hint('Optional : If you want to put any extra note'),
                             ]),
                         ])
-                        ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre')."{$seat->seat_no}")
+                        ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre') . "{$seat->seat_no}")
                         ->validationMessages([
                             'required' => 'Please select seat',
                         ])
@@ -148,7 +153,10 @@ class SubscriptionResource extends Resource
                         ->native(false)
                         ->displayFormat('d/m/Y')
                         ->live(onBlur: true)
-                        ->maxDate(fn (Get $get) => $get('end_date'))
+                        ->afterStateUpdated(
+                            fn (Get $get, Set $set) => $get('start_date') > $get('end_date') ? $set('end_date', '') : ''
+                        )
+                        ->minDate(fn ($context) => $context == 'create' ? now()->format('Y-m-d') : '')
                         ->closeOnDateSelection()
                         ->placeholder('Select start date')
                         ->validationMessages([
@@ -221,6 +229,15 @@ class SubscriptionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(SubscriptionExporter::class)
+                    ->chunkSize(100)
+                    ->formats([
+                        ExportFormat::Xlsx,
+                        ExportFormat::Csv,
+                    ])
+            ])
             ->columns([
                 TextColumn::make('uuid')
                     ->label('Subscription ID')
@@ -232,7 +249,7 @@ class SubscriptionResource extends Resource
                 TextColumn::make('seat.seat_no')
                     ->badge()
                     ->color(Color::Fuchsia)
-                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre')."{$state}")
+                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre') . "{$state}")
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('start_date')
@@ -275,6 +292,8 @@ class SubscriptionResource extends Resource
                     ->sortable(),
                 TextColumn::make('txn_id')
                     ->label('Transcation Id')
+                    ->copyable()
+                    ->copyMessage('Transcation Id Copied !')
                     ->searchable(),
                 TextColumn::make('note')
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -293,7 +312,7 @@ class SubscriptionResource extends Resource
                     ->multiple()
                     ->label('By Seat No.')
                     ->relationship('seat', 'seat_no')
-                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre')."{$seat->seat_no}")
+                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre') . "{$seat->seat_no}")
                     ->preload(),
                 SelectFilter::make('payment_method')
                     ->label('By Payment Method')
@@ -341,10 +360,17 @@ class SubscriptionResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                        ->exporter(SubscriptionExporter::class)
+                        ->chunkSize(100)
+                        ->formats([
+                            ExportFormat::Xlsx,
+                            ExportFormat::Csv,
+                        ])
                 ]),
             ])
             ->poll(60)
-            ->defaultSort('created_at', 'DESC');
+            ->defaultSort('start_date', 'DESC');
     }
 
     public static function getRelations(): array

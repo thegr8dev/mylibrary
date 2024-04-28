@@ -1,5 +1,3 @@
 <p align="center">
-    &copy; {{ date('Y') }} | {{ App\Models\Settings::first()?->site_title ?? config('app.name') }} | All
-    rights
-    reserved
+    &copy; {{ date('Y') }} | {!! app(config('settings.settings.site_settings'))?->copyright_text ?? config('app.name') !!}
 </p>

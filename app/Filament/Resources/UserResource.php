@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\UserExporter;
+use App\Filament\Imports\UserImporter;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers\SubscriptionRelationManager;
 use App\Models\User;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\Group;
@@ -13,6 +16,9 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -62,8 +68,25 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(UserImporter::class)
+                    ->chunkSize(100),
+                ExportAction::make()
+                    ->exporter(UserExporter::class)
+                    ->chunkSize(100)
+                    ->formats([
+                        ExportFormat::Xlsx,
+                        ExportFormat::Csv,
+                    ])
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->poll(60)
             ->columns([
-                ImageColumn::make('avatar')->default('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF-pQcgOR-TCTFYKlWGs8rSkvx4PvbOFplrM_HUD3r0w&s')->circular(),
+                ImageColumn::make('profile_pic')
+                    ->disk('public')
+                    ->default('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF-pQcgOR-TCTFYKlWGs8rSkvx4PvbOFplrM_HUD3r0w&s')
+                    ->circular(),
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('email')->searchable()->sortable(),
                 TextColumn::make('phone_no')->searchable()->sortable(),
@@ -76,7 +99,12 @@ class UserResource extends Resource
 
                     Fieldset::make($record->name)->schema([
                         Group::make()->schema([
-                            ImageEntry::make('profile_pic')->label('')->disk('public')->circular()->extraAttributes(['class' => 'justify-center'])->default('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF-pQcgOR-TCTFYKlWGs8rSkvx4PvbOFplrM_HUD3r0w&s'),
+                            ImageEntry::make('profile_pic')
+                                ->label('')
+                                ->disk('public')
+                                ->circular()
+                                ->extraAttributes(['class' => 'justify-center'])
+                                ->default('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF-pQcgOR-TCTFYKlWGs8rSkvx4PvbOFplrM_HUD3r0w&s'),
                         ])->columnSpan(1),
                         Group::make()->schema([
                             TextEntry::make('name'),
@@ -85,11 +113,10 @@ class UserResource extends Resource
                             TextEntry::make('status')->badge()->formatStateUsing(fn ($state) => match ($state) {
                                 1 => 'Active',
                                 0 => 'Deactive'
-                            })
-                                ->color(fn ($state) => match ($state) {
-                                    1 => 'success',
-                                    0 => 'danger'
-                                }),
+                            })->color(fn ($state) => match ($state) {
+                                1 => 'success',
+                                0 => 'danger'
+                            }),
                             TextEntry::make('created_at')->label('User Since')->since(),
                         ])->columns(2)->columnSpan(2),
                     ])->columns(3),
@@ -100,6 +127,13 @@ class UserResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                        ->exporter(UserExporter::class)
+                        ->chunkSize(100)
+                        ->formats([
+                            ExportFormat::Xlsx,
+                            ExportFormat::Csv,
+                        ])
                 ]),
             ]);
     }

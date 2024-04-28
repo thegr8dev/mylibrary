@@ -52,7 +52,8 @@ class Subscription extends Model
                     });
                 })->when(is_null($endDate), function ($query) use ($startDate) {
                     $query->where(function ($query) use ($startDate) {
-                        $query->where('end_date', '>=', $startDate);
+                        $query->where('end_date', '>=', $startDate)
+                            ->where('start_date', '<=', $startDate);
                     });
                 });
             });
@@ -62,6 +63,11 @@ class Subscription extends Model
     {
         static::creating(function (Subscription $sub) {
             $sub->uuid = \Str::orderedUuid();
+            $sub->txn_id = is_null($sub->txn_id) ? strtoupper(\Str::random(8)) : $sub->txn_id;
+        });
+
+        static::updating(function (Subscription $sub) {
+            $sub->txn_id = is_null($sub->txn_id) ? strtoupper(\Str::random(8)) : $sub->txn_id;
         });
     }
 

@@ -70,7 +70,7 @@ class SeatResource extends Resource
     {
         return [
             'index' => Pages\ListSeats::route('/'),
-            'create' => Pages\CreateSeat::route('/create'),
+            // 'create' => Pages\CreateSeat::route('/create'),
             'edit' => Pages\EditSeat::route('/{record}/edit'),
         ];
     }
