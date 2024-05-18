@@ -75,10 +75,6 @@ class UserResource extends Resource
                 ExportAction::make()
                     ->exporter(UserExporter::class)
                     ->chunkSize(100)
-                    ->formats([
-                        ExportFormat::Xlsx,
-                        ExportFormat::Csv,
-                    ])
             ])
             ->defaultSort('created_at', 'desc')
             ->poll(60)
@@ -130,10 +126,6 @@ class UserResource extends Resource
                     ExportBulkAction::make()
                         ->exporter(UserExporter::class)
                         ->chunkSize(100)
-                        ->formats([
-                            ExportFormat::Xlsx,
-                            ExportFormat::Csv,
-                        ])
                 ]),
             ]);
     }

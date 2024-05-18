@@ -12,6 +12,8 @@ class SiteSettings extends Settings
     public string $favicon;
     public string $primary_color;
     public string $font;
+    public string $spa_mode;
+    public string $top_navigation;
     public string $copyright_text;
     public string $currency;
 

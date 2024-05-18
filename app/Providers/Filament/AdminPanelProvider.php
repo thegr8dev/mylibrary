@@ -15,6 +15,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -22,6 +23,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
 
@@ -35,13 +37,20 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => constant("Filament\Support\Colors\Color::" . ucfirst(app(config('settings.settings.site_settings'))->primary_color))
+                'primary' => Schema::hasTable('settings') ? constant("Filament\Support\Colors\Color::" . ucfirst(app(config('settings.settings.site_settings'))->primary_color)) : Color::Amber
             ])
+<<<<<<< HEAD
             ->font(app(SiteSettings::class)->font)
             ->favicon(asset('storage/' .  app(config('settings.settings.site_settings'))?->favicon))
             ->brandLogo(asset('storage/' .  app(config('settings.settings.site_settings'))?->light_logo))
             ->darkModeBrandLogo(asset('storage/' .  app(config('settings.settings.site_settings'))?->dark_logo))
             ->brandLogoHeight('3.5rem')
+=======
+            ->font(Schema::hasTable('settings') ? app(SiteSettings::class)->font : 'Inter')
+            ->favicon(Schema::hasTable('settings') ? asset('storage/' .  app(config('settings.settings.site_settings'))?->favicon) : '')
+            ->brandLogo(Schema::hasTable('settings') ? asset('storage/' .  app(config('settings.settings.site_settings'))?->logo) : '')
+            ->brandLogoHeight('3rem')
+>>>>>>> 781b902fe4976dde451196a6616e6b8228cb3f37
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -88,6 +97,8 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->passwordReset()
             ->profile()
+            ->spa(Schema::hasTable('settings') ? app(SiteSettings::class)->spa_mode : true)
+            ->topNavigation(Schema::hasTable('settings') ? app(SiteSettings::class)->top_navigation : false)
             ->userMenuItems([
                 'profile' => MenuItem::make()->url(fn (): string => PagesEditProfile::getUrl())->icon('heroicon-o-user'),
             ])

@@ -243,10 +243,6 @@ class SubscriptionResource extends Resource
                 ExportAction::make()
                     ->exporter(SubscriptionExporter::class)
                     ->chunkSize(100)
-                    ->formats([
-                        ExportFormat::Xlsx,
-                        ExportFormat::Csv,
-                    ])
             ])
             ->columns([
                 TextColumn::make('uuid')
@@ -380,10 +376,6 @@ class SubscriptionResource extends Resource
                     ExportBulkAction::make()
                         ->exporter(SubscriptionExporter::class)
                         ->chunkSize(100)
-                        ->formats([
-                            ExportFormat::Xlsx,
-                            ExportFormat::Csv,
-                        ])
                 ]),
             ])
             ->poll(60)
