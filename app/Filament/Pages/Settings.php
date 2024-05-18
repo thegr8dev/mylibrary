@@ -111,7 +111,7 @@ class Settings extends Page implements HasForms
                 ])->aside()->icon('heroicon-m-code-bracket'),
 
             Section::make('Misc Settings')
-                ->description('Configure your application settings to customize date format (e.g., d/m/Y), set your local timezone, and define the preferred currency symbol and format for accurate and personalized data display.')
+                ->description('Configure your application settings to customize date format (e.g., d/m/Y), set your local timezone, and define the preferred currency symbol and format for accurate and personalized data display')
                 ->columns(1)
                 ->schema([
                     Select::make('currency')
@@ -155,7 +155,7 @@ class Settings extends Page implements HasForms
                 ])->aside()->icon('heroicon-m-beaker'),
 
             Section::make('Theming')
-                ->description(new HtmlString('Customize your site primary color, fonts, spa and navigation style. <br><br> (Changes will take effect on page reload)'))
+                ->description(new HtmlString('Customize your site primary color, fonts, spa and navigation style'))
                 ->schema([
                     Select::make('primary_color')
                         ->allowHtml()

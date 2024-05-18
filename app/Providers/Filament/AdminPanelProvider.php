@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\EditProfile as PagesEditProfile;
 use App\Settings\SiteSettings;
+use Exception;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -26,21 +27,33 @@ use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
+    protected function settingsTableExists()
+    {
+        try {
+            return Schema::hasTable('settings');
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
     public function panel(Panel $panel): Panel
     {
+        $settingsTableExists = $this->settingsTableExists();
+        $siteSettings = $settingsTableExists ? app(SiteSettings::class) : null;
+
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Schema::hasTable('settings') ? constant("Filament\Support\Colors\Color::".ucfirst(app(config('settings.settings.site_settings'))->primary_color)) : Color::Amber,
+                'primary' => $settingsTableExists ? constant("Filament\Support\Colors\Color::" . ucfirst($siteSettings->primary_color)) : Color::Amber,
             ])
-            ->brandLogo(Schema::hasTable('settings') ? asset('storage/'.app(config('settings.settings.site_settings'))?->light_logo) : '')
-            ->darkModeBrandLogo(Schema::hasTable('settings') ? asset('storage/'.app(config('settings.settings.site_settings'))?->dark_logo) : '')
+            ->brandLogo($settingsTableExists ? asset('storage/' . $siteSettings?->light_logo) : '')
+            ->darkModeBrandLogo($settingsTableExists ? asset('storage/' . $siteSettings?->dark_logo) : '')
             ->brandLogoHeight('3.5rem')
-            ->font(Schema::hasTable('settings') ? app(SiteSettings::class)->font : 'Inter')
-            ->favicon(Schema::hasTable('settings') ? asset('storage/'.app(config('settings.settings.site_settings'))?->favicon) : '')
+            ->font($settingsTableExists ? $siteSettings->font : 'Inter')
+            ->favicon($settingsTableExists ? asset('storage/' . $siteSettings?->favicon) : '')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -87,8 +100,8 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->passwordReset()
             ->profile()
-            ->spa(Schema::hasTable('settings') ? app(SiteSettings::class)->spa_mode : true)
-            ->topNavigation(Schema::hasTable('settings') ? app(SiteSettings::class)->top_navigation : false)
+            ->spa($settingsTableExists ? $siteSettings->spa_mode : true)
+            ->topNavigation($settingsTableExists ? $siteSettings->top_navigation : false)
             ->userMenuItems([
                 'profile' => MenuItem::make()->url(fn (): string => PagesEditProfile::getUrl())->icon('heroicon-o-user'),
             ])
