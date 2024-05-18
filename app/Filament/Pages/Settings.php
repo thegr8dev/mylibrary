@@ -3,12 +3,12 @@
 namespace App\Filament\Pages;
 
 use App\Enums\Currency;
+use App\Enums\DateFormat;
 use App\Enums\SiteColors;
 use App\Enums\SiteFonts;
-use App\Models\Settings as ModelsSettings;
+use App\Enums\Timezone;
 use App\Settings\SiteSettings;
 use Filament\Actions\Action;
-use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -17,24 +17,19 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Support\Colors\Color;
-use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Contracts\View\View;
-<<<<<<< HEAD
 use Illuminate\Support\Facades\Redirect;
-use Jackiedo\DotenvEditor\Facades\DotenvEditor;
-=======
 use Illuminate\Support\HtmlString;
->>>>>>> 781b902fe4976dde451196a6616e6b8228cb3f37
-use PHPUnit\TestRunner\TestResult\Collector;
+use Jackiedo\DotenvEditor\Facades\DotenvEditor;
 
 class Settings extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-cog-8-tooth';
 
     protected static string $view = 'filament.pages.settings';
 
@@ -62,6 +57,8 @@ class Settings extends Page implements HasForms
                 'top_navigation' => app(SiteSettings::class)->top_navigation,
                 'copyright_text' => app(SiteSettings::class)->copyright_text,
                 'currency' => app(SiteSettings::class)->currency,
+                'dateFormat' => app(SiteSettings::class)->dateFormat,
+                'timezone' => config('app.timezone')
             ]
         );
     }
@@ -113,8 +110,9 @@ class Settings extends Page implements HasForms
                     TextInput::make('copyright_text')->required()->string(),
                 ])->aside()->icon('heroicon-m-code-bracket'),
 
-            Section::make('Site Currency')
-                ->description('This will be used as the global currency everywhere it is referenced')
+            Section::make('Misc Settings')
+                ->description('Configure your application settings to customize date format (e.g., d/m/Y), set your local timezone, and define the preferred currency symbol and format for accurate and personalized data display.')
+                ->columns(1)
                 ->schema([
                     Select::make('currency')
                         ->native(false)
@@ -125,8 +123,36 @@ class Settings extends Page implements HasForms
                                 ->mapWithKeys(
                                     fn (Currency $currency) => [$currency->value => $currency->getLabel()]
                                 )->toArray()
+                        ),
+                    Select::make('dateFormat')
+                        ->native(false)
+                        ->searchable()
+                        ->allowHtml()
+                        ->hint(fn (Get $get) => new HtmlString(__('It will display date as: <b>:date </b>', ['date' => date($get('dateFormat'))])))
+                        ->placeholder('Select default date display format')
+                        ->live(onBlur: true)
+                        ->options(
+                            collect(DateFormat::cases())
+                                ->mapWithKeys(
+                                    fn (DateFormat $dateFormat) => [$dateFormat->value => $dateFormat->getLabel()]
+                                )->toArray()
+                        ),
+                    Select::make('timezone')
+                        ->native(false)
+                        ->label('Timezone')
+                        ->searchable()
+                        ->allowHtml()
+                        ->hint(new HtmlString(__('Current timezone is set to <b>:timezone</b> and time is <b>:time</b>', ['timezone' => config('app.timezone'), 'time' => now()->format('h:i A')])))
+                        ->placeholder('Select default timezone format')
+                        ->live(onBlur: true)
+                        ->options(
+                            collect(Timezone::cases())
+                                ->mapWithKeys(
+                                    fn (Timezone $timezone) => [$timezone->value => $timezone->getLabel()]
+                                )->toArray()
                         )
-                ])->aside()->icon('heroicon-m-currency-dollar'),
+
+                ])->aside()->icon('heroicon-m-beaker'),
 
             Section::make('Theming')
                 ->description(new HtmlString('Customize your site primary color, fonts, spa and navigation style. <br><br> (Changes will take effect on page reload)'))
@@ -216,7 +242,10 @@ class Settings extends Page implements HasForms
 
         $themeData->save();
 
-        $envEdit = DotenvEditor::setKey('APP_NAME', $data['site_title']);
+        $envEdit = DotenvEditor::setKeys([
+            'APP_NAME' => $data['site_title'],
+            'TIMEZONE' => $data['timezone'],
+        ]);
 
         $envEdit->save();
 

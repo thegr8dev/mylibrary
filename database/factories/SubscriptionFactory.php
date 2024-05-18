@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
 use App\Models\Seat;
 use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Nette\Utils\Random;
 
 class SubscriptionFactory extends Factory
 {
@@ -20,8 +19,8 @@ class SubscriptionFactory extends Factory
     public function definition(): array
     {
         // Generate a start date and ensure the end date is after the start date
-        $startDate = $this->faker->dateTimeBetween('-1 month', '+1 month')->format('Y-m-d') . ' 00:00:00';
-        $endDate = $this->faker->dateTimeBetween($startDate, '+1 month')->format('Y-m-d') . ' 00:00:00';
+        $startDate = $this->faker->dateTimeBetween('-1 month', '+1 month')->format('Y-m-d').' 00:00:00';
+        $endDate = $this->faker->dateTimeBetween($startDate, '+1 month')->format('Y-m-d').' 00:00:00';
 
         $statuses = ['active', 'deactive', 'cancelled', 'expired'];
         $paymentMethods = ['cash', 'online'];

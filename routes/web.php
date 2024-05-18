@@ -1,11 +1,6 @@
 <?php
 
-
-use App\Enums\SiteColors;
-use App\Settings\SiteSettings;
-use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Route;
-use App\Mapper\ColorMapper;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,5 +23,6 @@ Route::get('/login', function () {
 
 Route::get('/test', function () {
     $name = 'Blue';
-    return constant("Filament\Support\Colors\Color::" . app(config('settings.settings.site_settings'))->primary_color);
+
+    return constant("Filament\Support\Colors\Color::".app(config('settings.settings.site_settings'))->primary_color);
 });

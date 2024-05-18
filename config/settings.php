@@ -9,7 +9,7 @@ return [
      * put them (manually) here.
      */
     'settings' => [
-        'site_settings' => SiteSettings::class
+        'site_settings' => SiteSettings::class,
     ],
 
     /*

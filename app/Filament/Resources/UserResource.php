@@ -5,14 +5,17 @@ namespace App\Filament\Resources;
 use App\Filament\Exports\UserExporter;
 use App\Filament\Imports\UserImporter;
 use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\UserResource\Pages\EditUser;
+use App\Filament\Resources\UserResource\Pages\UserSubscription;
 use App\Filament\Resources\UserResource\RelationManagers\SubscriptionRelationManager;
 use App\Models\User;
-use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\Group;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Pages\Page;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
@@ -30,13 +33,16 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static int $globalSearchResultsLimit = 10;
 
     protected static ?string $navigationGroup = 'User and Permissions';
+
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
+
 
     public static function form(Form $form): Form
     {
@@ -74,7 +80,7 @@ class UserResource extends Resource
                     ->chunkSize(100),
                 ExportAction::make()
                     ->exporter(UserExporter::class)
-                    ->chunkSize(100)
+                    ->chunkSize(100),
             ])
             ->defaultSort('created_at', 'desc')
             ->poll(60)
@@ -125,17 +131,19 @@ class UserResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
                         ->exporter(UserExporter::class)
-                        ->chunkSize(100)
+                        ->chunkSize(100),
                 ]),
             ]);
     }
 
-    public static function getRelations(): array
+    public static function getRecordSubNavigation(Page $page): array
     {
-        return [
-            SubscriptionRelationManager::class,
-        ];
+        return $page->generateNavigationItems([
+            EditUser::class,
+            UserSubscription::class
+        ]);
     }
+
 
     public static function getPages(): array
     {
@@ -143,7 +151,7 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
-            // 'view' => Pages\ViewUser::route('/{record}/'),
+            'subscriptions' => Pages\UserSubscription::route('/{record}/manage/subscriptions'),
         ];
     }
 }

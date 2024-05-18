@@ -22,6 +22,13 @@ class EditUser extends EditRecord
 {
     protected static string $resource = UserResource::class;
 
+    protected static ?string $navigationLabel = 'Basic Details';
+
+    public function getContentTabLabel(): ?string
+    {
+        return "Basic Details";
+    }
+
     public function getFooter(): ?View
     {
         return view('filament.footer');
@@ -81,7 +88,7 @@ class EditUser extends EditRecord
                                 ->dehydrated(fn (Get $get) => $get('change_password') ? true : false)
                                 ->revealable()
                                 ->hidden(function (Get $get) {
-                                    return ! $get('change_password') ? true : false;
+                                    return !$get('change_password') ? true : false;
                                 }),
                             TextInput::make('password_confirmation')
                                 ->label('Confirm password')
@@ -89,7 +96,7 @@ class EditUser extends EditRecord
                                 ->revealable()
                                 ->password()
                                 ->hidden(function (Get $get) {
-                                    return ! $get('change_password') ? true : false;
+                                    return !$get('change_password') ? true : false;
                                 }),
                         ])->columns(1),
 

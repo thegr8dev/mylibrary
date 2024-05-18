@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Exports\SeatExporter;
 use App\Filament\Imports\SeatImporter;
 use App\Filament\Resources\SeatResource\Pages;
+use App\Filament\Resources\SeatResource\Pages\EditSeat;
+use App\Filament\Resources\SeatResource\Pages\SeatSubscriptions;
 use App\Filament\Resources\SeatResource\RelationManagers\SubscriptionRelationManager;
 use App\Models\Seat;
 use Filament\Forms\Components\Section;
@@ -12,6 +14,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ExportAction;
@@ -27,7 +31,9 @@ class SeatResource extends Resource
 
     protected static ?string $navigationGroup = 'Seating Management';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-table-cells';
+
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function form(Form $form): Form
     {
@@ -53,7 +59,7 @@ class SeatResource extends Resource
                     ]),
                 ExportAction::make()
                     ->exporter(SeatExporter::class)
-                    ->chunkSize(250)
+                    ->chunkSize(250),
             ])
             ->columns([
                 TextColumn::make('seat_no')->sortable()->searchable(),
@@ -73,16 +79,18 @@ class SeatResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
                         ->exporter(SeatExporter::class)
-                        ->chunkSize(250)
+                        ->chunkSize(250),
                 ]),
             ]);
     }
 
-    public static function getRelations(): array
+
+    public static function getRecordSubNavigation(Page $page): array
     {
-        return [
-            SubscriptionRelationManager::class,
-        ];
+        return $page->generateNavigationItems([
+            EditSeat::class,
+            SeatSubscriptions::class
+        ]);
     }
 
     public static function getPages(): array
@@ -91,6 +99,7 @@ class SeatResource extends Resource
             'index' => Pages\ListSeats::route('/'),
             // 'create' => Pages\CreateSeat::route('/create'),
             'edit' => Pages\EditSeat::route('/{record}/edit'),
+            'subscriptions' => Pages\SeatSubscriptions::route('/{record}/manage/subscriptions')
         ];
     }
 }

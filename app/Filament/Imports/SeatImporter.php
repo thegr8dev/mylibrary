@@ -8,7 +8,6 @@ use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
 use Filament\Forms\Components\Checkbox;
-use Illuminate\Validation\Rule;
 
 class SeatImporter extends Importer
 {
@@ -39,10 +38,10 @@ class SeatImporter extends Importer
             ]);
         }
 
-        if (!$this->options['updateExisting']) {
+        if (! $this->options['updateExisting']) {
             $seat = Seat::where('seat_no', $this->data['seat_no'])->first();
 
-            if (!$seat) {
+            if (! $seat) {
                 return new Seat();
             }
 
@@ -52,10 +51,10 @@ class SeatImporter extends Importer
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your seat import has completed and ' . number_format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
+        $body = 'Your seat import has completed and '.number_format($import->successful_rows).' '.str('row')->plural($import->successful_rows).' imported.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
+            $body .= ' '.number_format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to import.';
         }
 
         return $body;

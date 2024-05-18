@@ -8,7 +8,6 @@ use App\Models\Seat;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Settings\SiteSettings;
-use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -23,12 +22,10 @@ use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Alignment;
-use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
-use Filament\Tables\Columns\Summarizers\Average;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
@@ -42,7 +39,7 @@ class SubscriptionResource extends Resource
 {
     protected static ?string $model = Subscription::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
 
     protected static ?string $navigationGroup = 'Subscription';
 
@@ -156,7 +153,7 @@ class SubscriptionResource extends Resource
                     DatePicker::make('start_date')
                         ->label('Start date')
                         ->native(false)
-                        ->displayFormat('d/m/Y')
+                        ->displayFormat(app(SiteSettings::class)->dateFormat)
                         ->live(onBlur: true)
                         ->afterStateUpdated(
                             fn (Get $get, Set $set) => $get('start_date') > $get('end_date') ? $set('end_date', '') : ''
@@ -171,7 +168,7 @@ class SubscriptionResource extends Resource
                     DatePicker::make('end_date')
                         ->label('End date')
                         ->native(false)
-                        ->displayFormat('d/m/Y')
+                        ->displayFormat(app(SiteSettings::class)->dateFormat)
                         ->placeholder('Select end date')
                         ->minDate(fn (Get $get) => $get('start_date'))
                         ->live(onBlur: true)
@@ -242,7 +239,7 @@ class SubscriptionResource extends Resource
             ->headerActions([
                 ExportAction::make()
                     ->exporter(SubscriptionExporter::class)
-                    ->chunkSize(100)
+                    ->chunkSize(100),
             ])
             ->columns([
                 TextColumn::make('uuid')
@@ -259,11 +256,11 @@ class SubscriptionResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('start_date')
-                    ->date('d/m/Y')
+                    ->date(app(SiteSettings::class)->dateFormat)
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('end_date')
-                    ->date('d/m/Y')
+                    ->date(app(SiteSettings::class)->dateFormat)
                     ->searchable()
                     ->sortable(),
 
@@ -308,6 +305,13 @@ class SubscriptionResource extends Resource
                 TextColumn::make('note')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
+                TextColumn::make('created_at')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->dateTime(app(SiteSettings::class)->dateFormat),
+                TextColumn::make('updated_at')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->label('Last Updated at')
+                    ->dateTime(app(SiteSettings::class)->dateFormat)
             ])
 
             ->filters([
@@ -337,7 +341,7 @@ class SubscriptionResource extends Resource
                     ->form([
                         DatePicker::make('start_date')
                             ->native(false)
-                            ->displayFormat('d-m-Y')
+                            ->displayFormat(app(SiteSettings::class)->dateFormat)
                             ->closeOnDateSelection(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -351,7 +355,7 @@ class SubscriptionResource extends Resource
                     ->form([
                         DatePicker::make('end_date')
                             ->native(false)
-                            ->displayFormat('d-m-Y')
+                            ->displayFormat(app(SiteSettings::class)->dateFormat)
                             ->closeOnDateSelection(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -375,7 +379,7 @@ class SubscriptionResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
                         ->exporter(SubscriptionExporter::class)
-                        ->chunkSize(100)
+                        ->chunkSize(100),
                 ]),
             ])
             ->poll(60)

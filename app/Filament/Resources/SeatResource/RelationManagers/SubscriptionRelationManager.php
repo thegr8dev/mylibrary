@@ -5,6 +5,7 @@ namespace App\Filament\Resources\SeatResource\RelationManagers;
 use App\Filament\Resources\SubscriptionResource\Pages\EditSubscription;
 use App\Filament\Resources\SubscriptionResource\Pages\ViewSubscription;
 use App\Models\Subscription;
+use App\Settings\SiteSettings;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -27,6 +28,9 @@ class SubscriptionRelationManager extends RelationManager
     protected static ?string $title = 'Subscriptions';
 
     protected static ?string $inverseRelationship = 'seat';
+
+
+
 
     public function form(Form $form): Form
     {
@@ -94,6 +98,13 @@ class SubscriptionRelationManager extends RelationManager
                 TextColumn::make('note')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
+                TextColumn::make('created_at')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->dateTime(app(SiteSettings::class)->dateFormat),
+                TextColumn::make('updated_at')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->label('Last Updated at')
+                    ->dateTime(app(SiteSettings::class)->dateFormat)
             ])
             ->filters([
                 SelectFilter::make('status')

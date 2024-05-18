@@ -6,6 +6,7 @@ use App\Filament\Resources\SubscriptionResource\Pages\EditSubscription;
 use App\Filament\Resources\SubscriptionResource\Pages\ViewSubscription;
 use App\Models\Seat;
 use App\Models\Subscription;
+use App\Settings\SiteSettings;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -50,7 +51,7 @@ class SubscriptionRelationManager extends RelationManager
                 TextColumn::make('seat.seat_no')
                     ->badge()
                     ->color(Color::Fuchsia)
-                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre')."{$state}")
+                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre') . "{$state}")
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('start_date')
@@ -97,6 +98,13 @@ class SubscriptionRelationManager extends RelationManager
                 TextColumn::make('note')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
+                TextColumn::make('created_at')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->dateTime(app(SiteSettings::class)->dateFormat),
+                TextColumn::make('updated_at')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->label('Last Updated at')
+                    ->dateTime(app(SiteSettings::class)->dateFormat),
             ])
             ->filters([
                 SelectFilter::make('status')
@@ -114,7 +122,7 @@ class SubscriptionRelationManager extends RelationManager
                     ->multiple()
                     ->label('By Seat No.')
                     ->relationship('seat', 'seat_no')
-                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre')."{$seat->seat_no}")
+                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre') . "{$seat->seat_no}")
                     ->preload(),
                 SelectFilter::make('payment_method')
                     ->label('By Payment Method')

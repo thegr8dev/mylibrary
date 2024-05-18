@@ -19,7 +19,7 @@ class SubscriptionExporter extends Exporter
             ExportColumn::make('uuid')
                 ->label('Subscription ID'),
             ExportColumn::make('subscriber.name')->formatStateUsing(fn ($state) => ucwords($state)),
-            ExportColumn::make('seat.seat_no')->formatStateUsing(fn ($state) => config('seatprefix.pre') . $state),
+            ExportColumn::make('seat.seat_no')->formatStateUsing(fn ($state) => config('seatprefix.pre').$state),
             ExportColumn::make('start_date')->formatStateUsing(fn ($state) => date('d-m-Y', strtotime($state))),
             ExportColumn::make('end_date')->formatStateUsing(fn ($state) => date('d-m-Y', strtotime($state))),
             ExportColumn::make('status')->formatStateUsing(fn ($state) => match ($state) {
@@ -39,10 +39,10 @@ class SubscriptionExporter extends Exporter
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Your subscription export has completed and ' . number_format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
+        $body = 'Your subscription export has completed and '.number_format($export->successful_rows).' '.str('row')->plural($export->successful_rows).' exported.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
+            $body .= ' '.number_format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to export.';
         }
 
         return $body;
@@ -58,6 +58,6 @@ class SubscriptionExporter extends Exporter
 
     public function getFileName(Export $export): string
     {
-        return 'subscriptions-' . time();
+        return 'subscriptions-'.time();
     }
 }

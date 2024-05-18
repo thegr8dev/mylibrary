@@ -11,6 +11,11 @@ class EditSeat extends EditRecord
 {
     protected static string $resource = SeatResource::class;
 
+    public static function getNavigationLabel(): string
+    {
+        return 'Seat Details';
+    }
+
     protected function getHeaderActions(): array
     {
         return [

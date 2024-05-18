@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SubscriptionResource\Pages;
 
 use App\Filament\Resources\SubscriptionResource;
+use App\Settings\SiteSettings;
 use Filament\Actions;
 use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\Group;
@@ -30,7 +31,7 @@ class ViewSubscription extends ViewRecord
 
     public function getTitle(): string|Htmlable
     {
-        return '#'.$this->getRecord()->uuid;
+        return '#' . $this->getRecord()->uuid;
     }
 
     public function infolist(Infolist $infolist): Infolist
@@ -46,12 +47,12 @@ class ViewSubscription extends ViewRecord
 
                             TextEntry::make('subscriber.name'),
                             TextEntry::make('seat.seat_no')
-                                ->formatStateUsing(fn (string $state) => config('seatprefix.pre').$state),
+                                ->formatStateUsing(fn (string $state) => config('seatprefix.pre') . $state),
                         ])->columns(2)->columnSpan(3),
 
                         Group::make()->schema([
-                            TextEntry::make('start_date')->date('d/m/Y'),
-                            TextEntry::make('end_date')->date('d/m/Y'),
+                            TextEntry::make('start_date')->date(app(SiteSettings::class)->dateFormat),
+                            TextEntry::make('end_date')->date(app(SiteSettings::class)->dateFormat),
 
                         ])->columns(2)->columnSpan(3),
 
