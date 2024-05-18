@@ -39,8 +39,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->font(app(SiteSettings::class)->font)
             ->favicon(asset('storage/' .  app(config('settings.settings.site_settings'))?->favicon))
-            ->brandLogo(asset('storage/' .  app(config('settings.settings.site_settings'))?->logo))
-            ->brandLogoHeight('3rem')
+            ->brandLogo(asset('storage/' .  app(config('settings.settings.site_settings'))?->light_logo))
+            ->darkModeBrandLogo(asset('storage/' .  app(config('settings.settings.site_settings'))?->dark_logo))
+            ->brandLogoHeight('3.5rem')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

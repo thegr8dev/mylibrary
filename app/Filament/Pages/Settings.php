@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\Currency;
 use App\Enums\SiteColors;
 use App\Enums\SiteFonts;
 use App\Models\Settings as ModelsSettings;
@@ -20,6 +21,8 @@ use Filament\Pages\Page;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Redirect;
+use Jackiedo\DotenvEditor\Facades\DotenvEditor;
 use PHPUnit\TestRunner\TestResult\Collector;
 
 class Settings extends Page implements HasForms
@@ -36,6 +39,8 @@ class Settings extends Page implements HasForms
 
     protected static ?string $navigationLabel = 'Site Settings';
 
+    protected static ?string $title = 'Site Settings';
+
     public ?array $data = [];
 
     public function mount(): void
@@ -43,11 +48,13 @@ class Settings extends Page implements HasForms
         $this->form->fill(
             [
                 'site_title' => app(SiteSettings::class)->site_title,
-                'logo' => app(SiteSettings::class)->logo,
+                'light_logo' => app(SiteSettings::class)->light_logo,
+                'dark_logo' => app(SiteSettings::class)->dark_logo,
                 'favicon' => app(SiteSettings::class)->favicon,
                 'primary_color' => app(SiteSettings::class)->primary_color,
                 'font' => app(SiteSettings::class)->font,
                 'copyright_text' => app(SiteSettings::class)->copyright_text,
+                'currency' => app(SiteSettings::class)->currency,
             ]
         );
     }
@@ -56,23 +63,27 @@ class Settings extends Page implements HasForms
     {
         return $form->schema([
             Section::make('Site Title')->description('This will be your site title which display over emails & footer')->schema([
-                TextInput::make('site_title')->required()->string(),
+                TextInput::make('site_title')->required()->string()->hintIcon('heroicon-o-information-circle')->hintIconTooltip('Changing the site title will log you out. Please log in again to continue.'),
             ])->aside()->icon('heroicon-m-cursor-arrow-rays'),
 
             Section::make('Logo')->description('Upload a site logo where maximum size would be 400 x 300px')->schema([
-                FileUpload::make('logo')
+                FileUpload::make('light_logo')
+                    ->label('Light Mode Logo')
                     ->disk('public')
                     ->directory('site_assets')
-                    ->rule('dimensions:max_width=400,max_height=300')
-                    ->validationMessages([
-                        'dimensions' => ':attribute kk',
-                    ])
-                    ->hint('Logo size max is 400 x 300 px')
                     ->required()
                     ->image()
                     ->imageEditor()
                     ->maxSize(1024),
-            ])->aside()->icon('heroicon-o-puzzle-piece'),
+                FileUpload::make('dark_logo')
+                    ->label('Dark Mode Logo')
+                    ->disk('public')
+                    ->directory('site_assets')
+                    ->required()
+                    ->image()
+                    ->imageEditor()
+                    ->maxSize(1024),
+            ])->aside()->icon('heroicon-o-puzzle-piece')->columns(2),
 
             Section::make('Favicon')->description('Upload a favicon where maximum size would be 100 x 100px')->schema([
                 FileUpload::make('favicon')
@@ -95,11 +106,27 @@ class Settings extends Page implements HasForms
                     TextInput::make('copyright_text')->required()->string(),
                 ])->aside()->icon('heroicon-m-code-bracket'),
 
+            Section::make('Site Currency')
+                ->description('This will be used as the global currency everywhere it is referenced')
+                ->schema([
+                    Select::make('currency')
+                        ->native(false)
+                        ->searchable()
+                        ->placeholder('Select default currency')
+                        ->options(
+                            collect(Currency::cases())
+                                ->mapWithKeys(
+                                    fn (Currency $currency) => [$currency->value => $currency->getLabel()]
+                                )->toArray()
+                        )
+                ])->aside()->icon('heroicon-m-currency-dollar'),
+
             Section::make('Theming')
                 ->description('Customize your site primary color, fonts.')
                 ->schema([
                     Select::make('primary_color')
                         ->allowHtml()
+                        ->searchable()
                         ->native(false)
                         ->label('Primary Color')
                         ->placeholder('Try new site color')
@@ -115,6 +142,7 @@ class Settings extends Page implements HasForms
                         ),
                     Select::make('font')
                         ->allowHtml()
+                        ->searchable()
                         ->label('Fonts')
                         ->placeholder('Try new font family')
                         ->native(false)
@@ -151,10 +179,16 @@ class Settings extends Page implements HasForms
 
         $themeData->save();
 
+        $envEdit = DotenvEditor::setKey('APP_NAME', $data['site_title']);
+
+        $envEdit->save();
+
         Notification::make()
             ->title('Settings updated!')
             ->success()
             ->send();
+
+        return Redirect::to(route(Settings::getRouteName()));
     }
 
     public function getFooter(): ?View

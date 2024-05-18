@@ -8,11 +8,13 @@ return new class extends SettingsMigration
 {
     public function up(): void
     {
-        $this->migrator->add('global.site_title', 'My Library');
-        $this->migrator->add('global.logo', 'site_assets/logo.png');
+        $this->migrator->add('global.site_title', 'Library Master - Manage with ease');
+        $this->migrator->add('global.currency', 'INR');
+        $this->migrator->add('global.light_logo', 'site_assets/defaultLightModeLogo.png');
+        $this->migrator->add('global.dark_logo', 'site_assets/defaultDarkModeLogo.png');
         $this->migrator->add('global.favicon', 'site_assets/favicon.png');
         $this->migrator->add('global.primary_color', ucfirst(SiteColors::DEFAULT));
         $this->migrator->add('global.font', SiteFonts::DEFAULT);
-        $this->migrator->add('global.copyright_text', __('&copy :date All rights reserved', ['date' => date('Y')]));
+        $this->migrator->add('global.copyright_text', __('All rights reserved'));
     }
 };

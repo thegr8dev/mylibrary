@@ -28,5 +28,5 @@ Route::get('/login', function () {
 
 Route::get('/test', function () {
     $name = 'Blue';
-    return constant("Filament\Support\Colors\Color::" . $name);
+    return constant("Filament\Support\Colors\Color::" . app(config('settings.settings.site_settings'))->primary_color);
 });

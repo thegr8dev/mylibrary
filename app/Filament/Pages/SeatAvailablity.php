@@ -7,6 +7,7 @@ use App\Filament\Resources\SubscriptionResource\Pages\ViewSubscription;
 use App\Models\Seat;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Settings\SiteSettings;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -22,6 +23,7 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\Alignment;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -221,6 +223,7 @@ class SeatAvailablity extends Page implements HasTable
                                     'required' => 'Please select end date',
                                 ])
                                 ->required(),
+
                             Select::make('status')
                                 ->label('Subscription status')
                                 ->options([
@@ -235,6 +238,11 @@ class SeatAvailablity extends Page implements HasTable
                                 ->validationMessages([
                                     'required' => 'Please select subscription status',
                                 ]),
+                            TextInput::make('amount')
+                                ->prefix(app(SiteSettings::class)->currency)
+                                ->required()
+                                ->minValue(1)
+                                ->numeric(),
                             Select::make('payment_method')
                                 ->label('Payment mode')
                                 ->options([

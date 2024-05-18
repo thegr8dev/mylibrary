@@ -32,7 +32,8 @@ class CopyAssets extends Command
 
         Storage::createDirectory('public/site_assets');
 
-        File::copy(public_path('default/logo.png'), storage_path('app/public/site_assets/logo.png'));
+        File::copy(public_path('default/defaultLightModeLogo.png'), storage_path('app/public/site_assets/defaultLightModeLogo.png'));
+        File::copy(public_path('default/defaultDarkModeLogo.png'), storage_path('app/public/site_assets/defaultDarkModeLogo.png'));
 
         File::copy(public_path('/default/favicon.png'), storage_path('app/public/site_assets/favicon.png'));
 

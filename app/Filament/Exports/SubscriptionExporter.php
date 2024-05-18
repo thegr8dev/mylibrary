@@ -27,6 +27,7 @@ class SubscriptionExporter extends Exporter
                 0 => 'Deactive'
             }),
             ExportColumn::make('txn_id'),
+            ExportColumn::make('amount'),
             ExportColumn::make('payment_method')->formatStateUsing(fn ($state) => ucwords($state)),
             ExportColumn::make('status')->formatStateUsing(fn ($state) => ucwords($state)),
             ExportColumn::make('note')->formatStateUsing(fn ($state) => $state ?? '-'),

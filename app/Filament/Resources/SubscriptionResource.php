@@ -7,6 +7,7 @@ use App\Filament\Resources\SubscriptionResource\Pages;
 use App\Models\Seat;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Settings\SiteSettings;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -22,9 +23,13 @@ use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Alignment;
+use Filament\Support\RawJs;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
+use Filament\Tables\Columns\Summarizers\Average;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
@@ -175,6 +180,11 @@ class SubscriptionResource extends Resource
                             'required' => 'Please select end date',
                         ])
                         ->required(),
+                    TextInput::make('amount')
+                        ->prefix(app(SiteSettings::class)->currency)
+                        ->required()
+                        ->minValue(1)
+                        ->numeric(),
                     Select::make('status')
                         ->label('Subscription status')
                         ->options([
@@ -260,6 +270,7 @@ class SubscriptionResource extends Resource
                     ->date('d/m/Y')
                     ->searchable()
                     ->sortable(),
+
                 TextColumn::make('status')
                     ->badge()
                     ->searchable()
@@ -277,6 +288,9 @@ class SubscriptionResource extends Resource
                         'cancelled' => 'warning',
                         'expired' => 'danger',
                     }),
+                TextColumn::make('amount')
+                    ->money(app(SiteSettings::class)->currency)
+                    ->summarize(Sum::make()->label('Total')->money(app(SiteSettings::class)->currency)),
                 TextColumn::make('payment_method')
                     ->searchable()
                     ->badge()
@@ -299,6 +313,7 @@ class SubscriptionResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
             ])
+
             ->filters([
                 SelectFilter::make('subscriber')
                     ->label('By Subscriber')
@@ -353,9 +368,11 @@ class SubscriptionResource extends Resource
             ], layout: FiltersLayout::AboveContent)
             ->filtersFormColumns(3)
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

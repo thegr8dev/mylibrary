@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('start_date');
             $table->timestamp('end_date');
             $table->string('status');
+            $table->double('amount');
             $table->string('txn_id')->nullable();
             $table->string('payment_method');
             $table->string('payment_proof')->nullable();
