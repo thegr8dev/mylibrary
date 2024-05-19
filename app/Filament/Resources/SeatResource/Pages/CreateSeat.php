@@ -3,6 +3,11 @@
 namespace App\Filament\Resources\SeatResource\Pages;
 
 use App\Filament\Resources\SeatResource;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Contracts\View\View;

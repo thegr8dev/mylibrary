@@ -10,7 +10,7 @@ class Seat extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = ['seat_no', 'status', 'note'];
 
     public function subscription(): HasMany
     {
