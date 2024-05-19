@@ -18,6 +18,8 @@ class SeatFactory extends Factory
     {
         return [
             'seat_no' => fake()->unique()->numberBetween($min = 1, $max = 9000),
+            'note' => fake()->sentence(),
+            'status' => fake()->randomElement([1, 0])
         ];
     }
 }
