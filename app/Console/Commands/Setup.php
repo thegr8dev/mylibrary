@@ -39,7 +39,7 @@ class Setup extends Command
             ->success()
             ->icon('heroicon-o-cursor-arrow-ripple')
             ->title('Setup completed !')
-            ->body('Congrats ! app installed sucessfully !')
-            ->sendToDatabase(User::find(1));
+            ->body('Congrats ! app installed successfully !')
+            ->sendToDatabase(User::whereEmail('admin@admin.com')->first());
     }
 }

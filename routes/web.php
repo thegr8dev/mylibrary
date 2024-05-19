@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,7 +23,6 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::get('/test', function () {
-    $name = 'Blue';
-
-    return constant("Filament\Support\Colors\Color::".app(config('settings.settings.site_settings'))->primary_color);
+    Artisan::call('app:install');
+    return Artisan::output();
 });
