@@ -14,9 +14,9 @@ use Livewire\Livewire;
 
 use function Pest\Livewire\livewire;
 
-beforeEach(function () {
-    $this->actingAs(User::factory()->create());
-});
+// beforeEach(function () {
+//     $this->actingAs(User::factory()->create());
+// });
 
 
 it('can render index page', function () {

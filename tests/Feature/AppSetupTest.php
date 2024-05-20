@@ -47,7 +47,7 @@ it('prevents user login with invalid credentials', function () {
 beforeEach(function () {
     Storage::deleteDirectory('public/site_assets');
     File::deleteDirectory(public_path('site_assets'));
-    $this->artisan('migrate:fresh');
+    //$this->artisan('migrate:fresh');
 });
 
 

@@ -34,6 +34,7 @@ expect()->extend('toBeOne', function () {
 
 beforeEach(function () {
     $this->artisan('migrate:fresh');
+    $this->actingAs(User::factory()->create());
 });
 
 /*

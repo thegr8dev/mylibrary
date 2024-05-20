@@ -17,9 +17,8 @@ use Livewire\Livewire;
 
 use function Pest\Livewire\livewire;
 
-beforeEach(function () {
-    $this->actingAs(User::factory()->create());
-});
+// beforeEach(function () {
+// });
 
 
 it('can render user index page', function () {
