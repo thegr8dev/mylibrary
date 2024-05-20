@@ -11,7 +11,7 @@ use function Pest\Livewire\livewire;
 
 beforeEach(function () {
     $this->artisan('migrate:fresh');
-    $this->actingsAs(User::factory()->create());
+    $this->actingAs(User::factory()->create());
 });
 
 it('can render user index page', function () {
