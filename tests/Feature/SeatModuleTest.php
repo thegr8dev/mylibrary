@@ -4,20 +4,16 @@ use App\Filament\Resources\SeatResource;
 use App\Filament\Resources\SeatResource\Pages\CreateSeat;
 use App\Filament\Resources\SeatResource\Pages\EditSeat;
 use App\Filament\Resources\SeatResource\Pages\ListSeats;
-use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Models\Seat;
 use App\Models\User;
 use Filament\Actions\DeleteAction;
-use Illuminate\Foundation\Testing\RefreshDatabaseState;
-use Illuminate\Support\Facades\Log;
-use Livewire\Livewire;
 
 use function Pest\Livewire\livewire;
 
-// beforeEach(function () {
-//     $this->actingAs(User::factory()->create());
-// });
-
+beforeEach(function () {
+    $this->artisan('migrate:fresh');
+    $this->actingsAs(User::factory()->create());
+});
 
 it('can render index page', function () {
     $this->get(SeatResource::getUrl('index'))->assertSuccessful();
@@ -29,7 +25,6 @@ it('can list seats', function () {
     livewire(ListSeats::class)
         ->assertCanSeeTableRecords($seats);
 });
-
 
 it('can validate input', function () {
     livewire(CreateSeat::class)
@@ -47,16 +42,16 @@ it('can create seat', function () {
     livewire(CreateSeat::class)
         ->fillForm([
             'seat_no' => (string) $seat->seat_no,
-            'note' =>  $seat->note,
-            'status' =>  $seat->status
+            'note' => $seat->note,
+            'status' => $seat->status,
         ])
         ->call('create')
         ->assertHasNoFormErrors();
 
     $this->assertDatabaseHas(Seat::class, [
         'seat_no' => $seat->seat_no,
-        'note' =>  $seat->note,
-        'status' => $seat->status
+        'note' => $seat->note,
+        'status' => $seat->status,
     ]);
 });
 
@@ -74,9 +69,9 @@ it('can save seat', function () {
         'record' => (int) $seat->getRouteKey(),
     ])
         ->fillForm([
-            'seat_no' =>  (string) $newData->seat_no,
-            'note' =>  $newData->note,
-            'status' => $newData->status
+            'seat_no' => (string) $newData->seat_no,
+            'note' => $newData->note,
+            'status' => $newData->status,
         ])
         ->call('save')
         ->assertHasNoFormErrors();

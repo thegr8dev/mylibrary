@@ -4,7 +4,6 @@ namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
 use App\Filament\Resources\UserResource\RelationManagers\SubscriptionRelationManager;
-use App\Models\User;
 use Filament\Resources\Pages\ManageRelatedRecords;
 
 class UserSubscription extends ManageRelatedRecords
@@ -43,7 +42,7 @@ class UserSubscription extends ManageRelatedRecords
     public function getRelationManagers(): array
     {
         return [
-            SubscriptionRelationManager::class
+            SubscriptionRelationManager::class,
         ];
     }
 }

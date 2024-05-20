@@ -51,7 +51,7 @@ class SubscriptionRelationManager extends RelationManager
                 TextColumn::make('seat.seat_no')
                     ->badge()
                     ->color(Color::Fuchsia)
-                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre') . "{$state}")
+                    ->formatStateUsing(fn (string $state) => config('seatprefix.pre')."{$state}")
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('start_date')
@@ -122,7 +122,7 @@ class SubscriptionRelationManager extends RelationManager
                     ->multiple()
                     ->label('By Seat No.')
                     ->relationship('seat', 'seat_no')
-                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre') . "{$seat->seat_no}")
+                    ->getOptionLabelFromRecordUsing(fn (Seat $seat) => config('seatprefix.pre')."{$seat->seat_no}")
                     ->preload(),
                 SelectFilter::make('payment_method')
                     ->label('By Payment Method')

@@ -2,7 +2,6 @@
 
 use App\Filament\Resources\SeatResource\Pages\EditSeat;
 use App\Models\Seat;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,7 +26,6 @@ Route::get('/login', function () {
 Route::get('/test', function () {
 
     $record = Seat::factory()->create();
-
 
     dd(\Livewire\Livewire::test(EditSeat::class, [
         'record' => $record,

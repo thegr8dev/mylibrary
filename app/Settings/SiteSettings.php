@@ -2,7 +2,6 @@
 
 namespace App\Settings;
 
-use Filament\Support\Colors\Color;
 use Spatie\LaravelSettings\Settings;
 
 class SiteSettings extends Settings

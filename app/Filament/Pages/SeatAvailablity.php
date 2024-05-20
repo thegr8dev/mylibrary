@@ -59,7 +59,7 @@ class SeatAvailablity extends Page implements HasTable
                 TextColumn::make('seat_no')
                     ->badge()
                     ->color(Color::Fuchsia)
-                    ->formatStateUsing(fn ($state) => config('seatprefix.pre') . $state),
+                    ->formatStateUsing(fn ($state) => config('seatprefix.pre').$state),
                 TextColumn::make('status')
                     ->badge()
                     ->formatStateUsing(fn ($state) => match ($state) {
@@ -125,7 +125,7 @@ class SeatAvailablity extends Page implements HasTable
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Action::make('add_sub')
-                    ->label(fn (Seat $seat) => __('Add Subscription For Seat :seat', ['seat' => config('seatprefix.pre') . $seat->seat_no]))
+                    ->label(fn (Seat $seat) => __('Add Subscription For Seat :seat', ['seat' => config('seatprefix.pre').$seat->seat_no]))
                     ->tooltip(__('Add subscription'))
                     ->icon('heroicon-m-plus-circle')
                     ->slideOver()
@@ -140,7 +140,7 @@ class SeatAvailablity extends Page implements HasTable
 
                         $data['seat_id'] = $record->id;
 
-                        if (!in_array($data['status'], ['active', 'upcoming'])) {
+                        if (! in_array($data['status'], ['active', 'upcoming'])) {
                             return;
                         }
 
@@ -205,8 +205,8 @@ class SeatAvailablity extends Page implements HasTable
                                         ->markAsRead()
                                         ->url(route(ViewSubscription::getRouteName(), $data)),
                                 ])
-                                ->title('A New Subscription added for ' . $data->subscriber->name)
-                                ->body('This subscription added for Seat No.' . $data->seat->seat_no)
+                                ->title('A New Subscription added for '.$data->subscriber->name)
+                                ->body('This subscription added for Seat No.'.$data->seat->seat_no)
                                 ->toDatabase(),
                         );
                     })

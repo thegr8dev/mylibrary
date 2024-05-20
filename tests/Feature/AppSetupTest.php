@@ -1,11 +1,18 @@
 <?php
 
-use Livewire\Livewire;
-use Illuminate\Support\Facades\Artisan;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
+
 use function Pest\Laravel\assertDatabaseHas;
+
+beforeEach(function () {
+    Storage::deleteDirectory('public/site_assets');
+    File::deleteDirectory(public_path('site_assets'));
+    $this->artisan('migrate:fresh');
+});
 
 it('can access the login page', function () {
     $this->get('/admin/login')
@@ -42,14 +49,6 @@ it('prevents user login with invalid credentials', function () {
 
     $this->assertGuest(); // ensure no users are authenticated
 });
-
-
-beforeEach(function () {
-    Storage::deleteDirectory('public/site_assets');
-    File::deleteDirectory(public_path('site_assets'));
-    //$this->artisan('migrate:fresh');
-});
-
 
 it('runs the setup command successfully', function () {
 

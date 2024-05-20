@@ -44,7 +44,7 @@ class SeatSubscriptions extends ManageRelatedRecords
     {
 
         return [
-            SubscriptionRelationManager::class
+            SubscriptionRelationManager::class,
         ];
     }
 }

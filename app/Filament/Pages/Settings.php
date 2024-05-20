@@ -58,7 +58,7 @@ class Settings extends Page implements HasForms
                 'copyright_text' => app(SiteSettings::class)->copyright_text,
                 'currency' => app(SiteSettings::class)->currency,
                 'dateFormat' => app(SiteSettings::class)->dateFormat,
-                'timezone' => config('app.timezone')
+                'timezone' => config('app.timezone'),
             ]
         );
     }
@@ -150,7 +150,7 @@ class Settings extends Page implements HasForms
                                 ->mapWithKeys(
                                     fn (Timezone $timezone) => [$timezone->value => $timezone->getLabel()]
                                 )->toArray()
-                        )
+                        ),
 
                 ])->aside()->icon('heroicon-m-beaker'),
 
@@ -168,8 +168,8 @@ class Settings extends Page implements HasForms
                                 ->sortBy(fn ($color) => $color->value)
                                 ->mapWithKeys(static fn ($case) => [
                                     $case->value => "<span class='flex items-center gap-x-4'>
-                                <span class='rounded-full w-4 h-4' style='background:rgb(" . $case->getColor()[600] . ")'></span>
-                                <span>" . $case->getLabel() . '</span>
+                                <span class='rounded-full w-4 h-4' style='background:rgb(".$case->getColor()[600].")'></span>
+                                <span>".$case->getLabel().'</span>
                                 </span>',
                                 ])
                         ),

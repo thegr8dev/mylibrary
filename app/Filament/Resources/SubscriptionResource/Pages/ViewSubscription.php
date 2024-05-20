@@ -31,7 +31,7 @@ class ViewSubscription extends ViewRecord
 
     public function getTitle(): string|Htmlable
     {
-        return '#' . $this->getRecord()->uuid;
+        return '#'.$this->getRecord()->uuid;
     }
 
     public function infolist(Infolist $infolist): Infolist
@@ -47,7 +47,7 @@ class ViewSubscription extends ViewRecord
 
                             TextEntry::make('subscriber.name'),
                             TextEntry::make('seat.seat_no')
-                                ->formatStateUsing(fn (string $state) => config('seatprefix.pre') . $state),
+                                ->formatStateUsing(fn (string $state) => config('seatprefix.pre').$state),
                         ])->columns(2)->columnSpan(3),
 
                         Group::make()->schema([

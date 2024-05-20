@@ -7,7 +7,6 @@ use App\Filament\Imports\SeatImporter;
 use App\Filament\Resources\SeatResource\Pages;
 use App\Filament\Resources\SeatResource\Pages\EditSeat;
 use App\Filament\Resources\SeatResource\Pages\SeatSubscriptions;
-use App\Filament\Resources\SeatResource\RelationManagers\SubscriptionRelationManager;
 use App\Models\Seat;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
@@ -84,12 +83,11 @@ class SeatResource extends Resource
             ]);
     }
 
-
     public static function getRecordSubNavigation(Page $page): array
     {
         return $page->generateNavigationItems([
             EditSeat::class,
-            SeatSubscriptions::class
+            SeatSubscriptions::class,
         ]);
     }
 
@@ -99,7 +97,7 @@ class SeatResource extends Resource
             'index' => Pages\ListSeats::route('/'),
             // 'create' => Pages\CreateSeat::route('/create'),
             'edit' => Pages\EditSeat::route('/{record}/edit'),
-            'subscriptions' => Pages\SeatSubscriptions::route('/{record}/manage/subscriptions')
+            'subscriptions' => Pages\SeatSubscriptions::route('/{record}/manage/subscriptions'),
         ];
     }
 }

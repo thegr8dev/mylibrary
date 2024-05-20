@@ -29,9 +29,6 @@ class SubscriptionRelationManager extends RelationManager
 
     protected static ?string $inverseRelationship = 'seat';
 
-
-
-
     public function form(Form $form): Form
     {
         return $form
@@ -104,7 +101,7 @@ class SubscriptionRelationManager extends RelationManager
                 TextColumn::make('updated_at')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Last Updated at')
-                    ->dateTime(app(SiteSettings::class)->dateFormat)
+                    ->dateTime(app(SiteSettings::class)->dateFormat),
             ])
             ->filters([
                 SelectFilter::make('status')

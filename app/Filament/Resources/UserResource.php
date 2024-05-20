@@ -7,7 +7,6 @@ use App\Filament\Imports\UserImporter;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\Pages\UserSubscription;
-use App\Filament\Resources\UserResource\RelationManagers\SubscriptionRelationManager;
 use App\Models\User;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Fieldset;
@@ -42,7 +41,6 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'User and Permissions';
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
-
 
     public static function form(Form $form): Form
     {
@@ -140,10 +138,9 @@ class UserResource extends Resource
     {
         return $page->generateNavigationItems([
             EditUser::class,
-            UserSubscription::class
+            UserSubscription::class,
         ]);
     }
-
 
     public static function getPages(): array
     {

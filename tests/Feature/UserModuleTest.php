@@ -1,25 +1,18 @@
 <?php
 
-use App\Filament\Resources\SeatResource;
-use App\Filament\Resources\SeatResource\Pages\CreateSeat;
-use App\Filament\Resources\SeatResource\Pages\EditSeat;
-use App\Filament\Resources\SeatResource\Pages\ListSeats;
 use App\Filament\Resources\UserResource;
 use App\Filament\Resources\UserResource\Pages\CreateUser;
 use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\Pages\ListUsers;
-use App\Models\Seat;
 use App\Models\User;
 use Filament\Actions\DeleteAction;
-use Illuminate\Foundation\Testing\RefreshDatabaseState;
-use Illuminate\Support\Facades\Log;
-use Livewire\Livewire;
 
 use function Pest\Livewire\livewire;
 
-// beforeEach(function () {
-// });
-
+beforeEach(function () {
+    $this->artisan('migrate:fresh');
+    $this->actingsAs(User::factory()->create());
+});
 
 it('can render user index page', function () {
     $this->get(UserResource::getUrl('index'))->assertSuccessful();
@@ -32,12 +25,11 @@ it('can list users', function () {
         ->assertCanSeeTableRecords($seats);
 });
 
-
 it('can validate input', function () {
     livewire(CreateUser::class)
         ->fillForm([
             'name' => null,
-            'email' => null
+            'email' => null,
         ])
         ->call('create')
         ->assertHasFormErrors(['name' => 'required', 'email' => 'required']);
@@ -50,20 +42,20 @@ it('can create user', function () {
     livewire(CreateUser::class)
         ->fillForm([
             'name' => (string) $user->name,
-            'email' =>  $user->email,
-            'phone_no' =>  1234567890,
-            'password' =>  12345678,
+            'email' => $user->email,
+            'phone_no' => 1234567890,
+            'password' => 12345678,
             'status' => (bool) $user->status,
-            'password_confirmation' =>  12345678,
+            'password_confirmation' => 12345678,
         ])
         ->call('create')
         ->assertHasNoFormErrors();
 
     $this->assertDatabaseHas(User::class, [
         'name' => (string) $user->name,
-        'email' =>  $user->email,
+        'email' => $user->email,
         'status' => $user->status,
-        'phone_no' => 1234567890
+        'phone_no' => 1234567890,
     ]);
 });
 
@@ -79,9 +71,9 @@ it('can retrieve data', function () {
     livewire(EditUser::class, ['record' => $user->getRouteKey()])
         ->assertFormSet([
             'name' => (string) $user->name,
-            'email' =>  $user->email,
-            'phone_no' =>  $user->phone_no,
-            'status' =>  $user->status,
+            'email' => $user->email,
+            'phone_no' => $user->phone_no,
+            'status' => $user->status,
         ]);
 });
 
@@ -94,9 +86,9 @@ it('can save user', function () {
     ])
         ->fillForm([
             'name' => (string) $newData->name,
-            'email' =>  $newData->email,
-            'status' =>  $newData->status,
-            'phone_no' => 1234567890
+            'email' => $newData->email,
+            'status' => $newData->status,
+            'phone_no' => 1234567890,
         ])
         ->call('save')
         ->assertHasNoFormErrors();
@@ -107,8 +99,6 @@ it('can save user', function () {
         ->phone_no->toBe('1234567890')
         ->status->toBe((int) $newData->status);
 });
-
-
 
 it('can delete', function () {
     $user = User::factory()->create();

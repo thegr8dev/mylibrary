@@ -47,13 +47,13 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => $settingsTableExists ? constant("Filament\Support\Colors\Color::" . ucfirst($siteSettings->primary_color)) : Color::Amber,
+                'primary' => $settingsTableExists ? constant("Filament\Support\Colors\Color::".ucfirst($siteSettings->primary_color)) : Color::Amber,
             ])
-            ->brandLogo($settingsTableExists ? asset('storage/' . $siteSettings?->light_logo) : '')
-            ->darkModeBrandLogo($settingsTableExists ? asset('storage/' . $siteSettings?->dark_logo) : '')
+            ->brandLogo($settingsTableExists ? asset('storage/'.$siteSettings?->light_logo) : '')
+            ->darkModeBrandLogo($settingsTableExists ? asset('storage/'.$siteSettings?->dark_logo) : '')
             ->brandLogoHeight('3.5rem')
             ->font($settingsTableExists ? $siteSettings->font : 'Inter')
-            ->favicon($settingsTableExists ? asset('storage/' . $siteSettings?->favicon) : '')
+            ->favicon($settingsTableExists ? asset('storage/'.$siteSettings?->favicon) : '')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

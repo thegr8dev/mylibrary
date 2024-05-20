@@ -16,7 +16,6 @@ uses(
     Illuminate\Foundation\Testing\LazilyRefreshDatabase::class,
 )->in('Feature');
 
-
 /*
 |--------------------------------------------------------------------------
 | Expectations
@@ -30,11 +29,6 @@ uses(
 
 expect()->extend('toBeOne', function () {
     return $this->toBe(1);
-});
-
-beforeEach(function () {
-    $this->artisan('migrate:fresh');
-    $this->actingAs(User::factory()->create());
 });
 
 /*
