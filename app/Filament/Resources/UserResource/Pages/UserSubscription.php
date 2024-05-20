@@ -22,12 +22,17 @@ class UserSubscription extends ManageRelatedRecords
         return 'Subscriptions';
     }
 
-    public static function getNavigationBadge(): string
+    public static function getNavigationItems(array $urlParameters = []): array
     {
-        $seatId = request()->route('record'); // Get the current seat ID from the route
-        $subscriptionCount = User::findOrFail($seatId)->subscription()->count(); // Get the count of related subscriptions
+        $item = parent::getNavigationItems($urlParameters)[0];
 
-        return (string) $subscriptionCount;
+        $ownerRecord = $urlParameters['record'];
+
+        $formSubmissionsCount = $ownerRecord->subscription()->count();
+
+        $item->badge($formSubmissionsCount > 0 ? $formSubmissionsCount : null);
+
+        return [$item];
     }
 
     public static function getNavigationBadgeColor(): ?string

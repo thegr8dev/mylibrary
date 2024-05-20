@@ -15,7 +15,6 @@ use Livewire\Livewire;
 use function Pest\Livewire\livewire;
 
 beforeEach(function () {
-    $this->artisan('migrate:fresh');
     $this->actingAs(User::factory()->create());
 });
 
@@ -61,50 +60,51 @@ it('can create seat', function () {
     ]);
 });
 
-it('can render page', function () {
+it('can render edit seat page', function () {
     $this->get(SeatResource::getUrl('edit', [
         'record' => Seat::factory()->create(),
     ]))->assertSuccessful();
 });
 
-// it('can save', function () {
-//     $seat = Seat::factory()->create();
-//     $newData = Seat::factory()->make();
+it('can save seat', function () {
+    $seat = Seat::factory()->create();
+    $newData = Seat::factory()->make();
 
-//     livewire(EditSeat::class, [
-//         'record' => (int) $seat->getRouteKey(),
-//     ])
-//         ->fillForm([
-//             'seat_no' =>  $newData->seat_no,
-//             'note' =>  $newData->note,
-//             'status' => $newData->status
-//         ])
-//         ->call('save')
-//         ->assertHasNoFormErrors();
+    livewire(EditSeat::class, [
+        'record' => (int) $seat->getRouteKey(),
+    ])
+        ->fillForm([
+            'seat_no' =>  (string) $newData->seat_no,
+            'note' =>  $newData->note,
+            'status' => $newData->status
+        ])
+        ->call('save')
+        ->assertHasNoFormErrors();
 
-//     expect($seat->refresh())
-//         ->seat_no->toBe($newData->getKey())
-//         ->note->toBe($newData->note)
-//         ->status->toBe($newData->status);
-// });
+    expect($seat->refresh())
+        ->seat_no->toBe((string) $newData->seat_no)
+        ->note->toBe($newData->note)
+        ->status->toBe($newData->status);
+});
 
-// it('can retrieve data', function () {
-//     $seat = Seat::factory()->create();
+it('can retrieve data', function () {
+    $seat = Seat::factory()->create();
 
-//     $this->assertDatabaseHas(Seat::class, [
-//         'seat_no' => $seat->seat_no,
-//     ]);
+    livewire(EditSeat::class, ['record' => (int) $seat->getRouteKey()])
+        ->assertFormSet([
+            'seat_no' => $seat->seat_no,
+            'note' => $seat->note,
+            'status' => $seat->status,
+        ]);
+});
 
-//     livewire(EditSeat::class, ['record' => (int) $seat->getRouteKey()]);
-// });
+it('can delete', function () {
+    $seat = Seat::factory()->create();
 
-// it('can delete', function () {
-//     $seat = Seat::factory()->create();
+    livewire(EditSeat::class, [
+        'record' => $seat->getRouteKey(),
+    ])
+        ->callAction(DeleteAction::class);
 
-//     livewire(EditSeat::class, [
-//         'record' => $seat->getRouteKey(),
-//     ])
-//         ->callAction(DeleteAction::class);
-
-//     $this->assertModelMissing($seat);
-// });
+    $this->assertModelMissing($seat);
+});
