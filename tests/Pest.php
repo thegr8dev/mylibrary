@@ -32,6 +32,10 @@ expect()->extend('toBeOne', function () {
     return $this->toBe(1);
 });
 
+beforeEach(function () {
+    $this->artisan('migrate:fresh');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Functions

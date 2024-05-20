@@ -15,7 +15,6 @@ use Livewire\Livewire;
 use function Pest\Livewire\livewire;
 
 beforeEach(function () {
-    $this->artisan('migrate:fresh');
     $this->actingAs(User::factory()->create());
 });
 
