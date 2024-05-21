@@ -29,6 +29,26 @@ jobs:
         with:
           commit_message: "Fixes coding style"
 
+  update-copyright:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: 'Fetch the latest code'
+        run: |
+            git fetch
+            git reset --hard origin/master
+      - name: Run Copyright Script
+        run: |
+          chmod +x ./copyright.sh
+          ./copyright.sh
+
+      - name: Auto-commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Add copyright headers"
+          branch: ${{ github.ref }}
+
   laravel-tests:
     needs: code-style-fix
     runs-on: ubuntu-latest
