@@ -3,7 +3,7 @@ name: Fix Code Style
 on: [push]
  
 jobs:
-  lint:
+  code-style-fix:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
