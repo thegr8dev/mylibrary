@@ -9,10 +9,10 @@ use Filament\Actions\DeleteAction;
 
 use function Pest\Livewire\livewire;
 
-beforeEach(function () {
-    $this->artisan('migrate:fresh');
-    $this->actingAs(User::factory()->create());
-});
+// beforeEach(function () {
+//     $this->artisan('migrate:fresh');
+//     $this->actingAs(User::factory()->create());
+// });
 
 it('can render user index page', function () {
     $this->get(UserResource::getUrl('index'))->assertSuccessful();

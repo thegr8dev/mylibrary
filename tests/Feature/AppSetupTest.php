@@ -2,19 +2,31 @@
 
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Livewire\livewire;
 
 beforeEach(function () {
     Storage::deleteDirectory('public/site_assets');
     File::deleteDirectory(public_path('site_assets'));
-    $this->artisan('migrate:fresh');
+    // $this->artisan('migrate:fresh');
+});
+
+afterAll(function () {
+    Storage::deleteDirectory('public/site_assets');
+    File::deleteDirectory(public_path('site_assets'));
+    expect(Storage::exists('public/site_assets/defaultLightModeLogo.png'))->toBeFalse();
+    expect(Storage::exists('public/site_assets/defaultDarkModeLogo.png'))->toBeFalse();
+    expect(Storage::exists('public/site_assets/favicon.png'))->toBeFalse();
 });
 
 it('can access the login page', function () {
+    Auth::logout();
+    $this->assertGuest();
     $this->get('/admin/login')
         ->assertStatus(200)
         ->assertSee('Login');
@@ -33,22 +45,22 @@ it('allows user to login with valid credentials', function () {
 
 it('prevents user login with invalid credentials', function () {
     // Create a user with a known password
+    Auth::logout();
+
     $user = User::factory()->create([
         'email' => 'user@example.com',
         'password' => bcrypt('correct-password'),
     ]);
 
-    // Use Livewire to test invalid login via the Filament login component
-    $response = Livewire::test(\Filament\Pages\Auth\Login::class)
-        ->set('data.email', $user->email)  // Set using the correct state path
-        ->set('data.password', 'wrong-password')  // Set using the correct state path
+    livewire(\Filament\Pages\Auth\Login::class)
+        ->set('data.email', $user->email)  // Ensure these fields are correctly named
+        ->set('data.password', 'wrong-password')  // Ensure these fields are correctly named
         ->call('authenticate')
-        ->assertHasErrors(['data.email']);
-
-    $response->assertStatus(200);
+        ->assertHasErrors(['data.email']); // Ensure this is the correct key for errors
 
     $this->assertGuest(); // ensure no users are authenticated
 });
+
 
 it('runs the setup command successfully', function () {
 
