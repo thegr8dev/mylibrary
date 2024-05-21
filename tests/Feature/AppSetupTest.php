@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use Livewire\Livewire;
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Livewire\livewire;
@@ -60,7 +59,6 @@ it('prevents user login with invalid credentials', function () {
 
     $this->assertGuest(); // ensure no users are authenticated
 });
-
 
 it('runs the setup command successfully', function () {
 
