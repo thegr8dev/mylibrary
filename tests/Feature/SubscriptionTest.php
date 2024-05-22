@@ -4,9 +4,7 @@ use App\Filament\Resources\SubscriptionResource;
 use App\Filament\Resources\SubscriptionResource\Pages\CreateSubscription;
 use App\Filament\Resources\SubscriptionResource\Pages\EditSubscription;
 use App\Filament\Resources\SubscriptionResource\Pages\ListSubscriptions;
-use App\Models\Seat;
 use App\Models\Subscription;
-use App\Models\User;
 use Filament\Actions\DeleteAction;
 
 use function Pest\Livewire\livewire;
@@ -44,7 +42,7 @@ it('can validate input', function () {
 it('can create subscription', function () {
 
     $subscription = Subscription::factory()->make();
-   
+
     livewire(CreateSubscription::class)
         ->fillForm([
             'user_id' => $subscription->user_id,
@@ -54,7 +52,7 @@ it('can create subscription', function () {
             'amount' => $subscription->amount,
             'status' => $subscription->status,
             'payment_method' => $subscription->payment_method,
-            'txn_id' => $subscription->txn_id
+            'txn_id' => $subscription->txn_id,
         ])
         ->call('create')
         ->assertHasNoFormErrors();
@@ -63,11 +61,11 @@ it('can create subscription', function () {
         'user_id' => $subscription->user_id,
         'seat_id' => $subscription->seat_id,
         'start_date' => \Carbon\Carbon::parse($subscription->start_date)->format('Y-m-d'),
-        'end_date' => \Carbon\Carbon::parse($subscription->end_date)->format('Y-m-d') ,
+        'end_date' => \Carbon\Carbon::parse($subscription->end_date)->format('Y-m-d'),
         'amount' => $subscription->amount,
         'status' => $subscription->status,
         'payment_method' => $subscription->payment_method,
-        'txn_id' => $subscription->txn_id
+        'txn_id' => $subscription->txn_id,
     ]);
 });
 
@@ -80,7 +78,7 @@ it('can render edit subscription page', function () {
 it('can save subscription', function () {
     $oldSubsription = Subscription::factory()->create();
     $newData = Subscription::factory()->make();
-    
+
     livewire(EditSubscription::class, [
         'record' => $oldSubsription->getRouteKey(),
     ])
@@ -102,7 +100,7 @@ it('can save subscription', function () {
         ->seat_id->toBe($newData->seat_id)
         ->start_date->toBe(\Carbon\Carbon::parse($newData->start_date)->format('Y-m-d'))
         ->end_date->toBe(\Carbon\Carbon::parse($newData->end_date)->format('Y-m-d'))
-        ->amount->toBe((double) $newData->amount)
+        ->amount->toBe((float) $newData->amount)
         ->status->toBe($newData->status)
         ->payment_method->toBe($newData->payment_method)
         ->txn_id->toBe($newData->txn_id);
