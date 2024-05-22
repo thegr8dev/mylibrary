@@ -129,8 +129,7 @@ it('can delete', function () {
 
     livewire(EditSubscription::class, [
         'record' => $subscription->getRouteKey(),
-    ])
-        ->callAction(DeleteAction::class);
+    ])->callAction(DeleteAction::class);
 
     $this->assertModelMissing($subscription);
 });
