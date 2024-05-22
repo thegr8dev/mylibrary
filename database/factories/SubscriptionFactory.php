@@ -25,28 +25,10 @@ class SubscriptionFactory extends Factory
         $statuses = ['active', 'deactive', 'cancelled', 'expired'];
         $paymentMethods = ['cash', 'online'];
         // Find a user without an active subscription
-        $userId = User::whereDoesntHave('subscription', function ($query) use ($startDate, $endDate) {
-            $query->where(function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('start_date', [$startDate, $endDate])
-                    ->orWhereBetween('end_date', [$startDate, $endDate])
-                    ->orWhere(function ($query) use ($startDate, $endDate) {
-                        $query->where('start_date', '<', $startDate)
-                            ->where('end_date', '>', $endDate);
-                    });
-            });
-        })->inRandomOrder()->first()->id;
+        $userId = User::factory()->create()->id;
 
         // Find a seat that is available for the generated start and end dates
-        $seatId = Seat::whereDoesntHave('subscription', function ($query) use ($startDate, $endDate) {
-            $query->where(function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('start_date', [$startDate, $endDate])
-                    ->orWhereBetween('end_date', [$startDate, $endDate])
-                    ->orWhere(function ($query) use ($startDate, $endDate) {
-                        $query->where('start_date', '<', $startDate)
-                            ->where('end_date', '>', $endDate);
-                    });
-            });
-        })->inRandomOrder()->first()->id;
+        $seatId = Seat::factory()->create()->id;
 
         return [
             'user_id' => $userId,
